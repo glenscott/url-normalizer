@@ -1,0 +1,19 @@
+
+Syntax based normalization of URI's
+
+This normalises URI's based on the specification RFC 3986 
+http://www.apps.ietf.org/rfc/rfc3986.html
+
+Example usage:
+<code>
+require_once 'URLNormalizer.php';
+
+$url = 'eXAMPLE://a/./b/../b/%63/%7bfoo%7d';
+$un = new URLNormalizer();
+$un->setUrl( $url );
+echo $un->normalize();
+
+// result: "example://a/b/c/%7Bfoo%7D"
+</code>
+
+
