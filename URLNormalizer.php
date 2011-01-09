@@ -18,6 +18,7 @@
  * // result: "example://a/b/c/%7Bfoo%7D"
  * </code>
  *
+ * @author Glen Scott <glen_scott@yahoo.co.uk>
  */
 class URLNormalizer {
     private $url;
