@@ -16,4 +16,6 @@ echo $un->normalize();
 // result: "example://a/b/c/%7Bfoo%7D"
 </code>
 
+TODO:
 
+Add further scheme-based normalization steps, as detailed in section 6.2.3 of the RFC.
