@@ -30,7 +30,8 @@ class URLNormalizer {
     private $path;
     private $query;
     private $fragment;
-    
+	private $default_scheme_ports = array( 'http' => 80, );
+	
     public function __construct() {
         $this->scheme   = '';
         $this->host     = '';
@@ -91,7 +92,8 @@ class URLNormalizer {
             
         }
 
-        
+		$this->schemeBasedNormalization();
+		
         return $this->scheme . $this->host . $this->port . $this->user . $this->pass . $this->path . $this->query . $this->fragment;
     }
 
@@ -178,4 +180,11 @@ class URLNormalizer {
         
         return $new_path;
     }
+
+	private function schemeBasedNormalization() {
+		$scheme = str_replace( '://', '', $this->scheme );
+		if ( isset( $this->default_scheme_ports[$scheme] ) && $this->default_scheme_ports[$scheme] == $this->port ) {
+			$this->port = '';
+		}
+	}
 }

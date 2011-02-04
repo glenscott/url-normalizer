@@ -1,6 +1,5 @@
 <?php
 
-require_once 'PHPUnit/Framework.php';
 require_once 'URLNormalizer.php';
 
 class URLNormalizerTest extends PHPUnit_Framework_TestCase
@@ -97,4 +96,24 @@ class URLNormalizerTest extends PHPUnit_Framework_TestCase
         $this->assertEquals( 'c/%7b', $this->fixture->urlDecodeUnreservedChars( '%63/%7b' ) );
         $this->assertEquals( 'eXAMPLE://a/./b/../b/c/%7bfoo%7d', $this->fixture->urlDecodeUnreservedChars( 'eXAMPLE://a/./b/../b/%63/%7bfoo%7d' ) );
     }
+
+	/**
+	 * @dataProvider schemeData
+	 *
+	 * http://www.apps.ietf.org/rfc/rfc3986.html#sec-6.2.3
+	 */
+	public function testSchemeBasedNormalization( $url ) {
+		$expected_uri = 'http://example.com/';
+		
+		$this->fixture->setUrl( $url );
+		$this->assertEquals( $expected_uri, $this->fixture->normalize() );
+
+	}
+	
+	public function schemeData() {
+		return array( array( 'http://example.com' ),
+					  array( 'http://example.com/' ),
+					  array( 'http://example.com:/' ),
+					  array( 'http://example.com:80/' ), );
+	}
 }
