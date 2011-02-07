@@ -9,7 +9,7 @@ class URLNormalizerTest extends PHPUnit_Framework_TestCase
     
     protected function setUp()
     {
-        $this->fixture =& new URLNormalizer();
+        $this->fixture = new URLNormalizer();
         $this->fixture->setUrl( $this->test_url );
     }
     
