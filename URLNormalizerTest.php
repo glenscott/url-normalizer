@@ -116,4 +116,18 @@ class URLNormalizerTest extends PHPUnit_Framework_TestCase
 					  array( 'http://example.com:/' ),
 					  array( 'http://example.com:80/' ), );
 	}
+	
+	public function testQueryParametersArePreserved() {
+	    $url = 'http://fancysite.nl/links/doit.pl?id=2029';
+	    
+	    $this->fixture->setUrl( $url );
+	    $this->assertEquals( $url, $this->fixture->normalize() );
+	}
+	
+	public function testFragmentIdentifiersArePreserved() {
+	    $url = 'http://example.com/index.html#fragment';
+	    
+	    $this->fixture->setUrl( $url );
+	    $this->assertEquals( $url, $this->fixture->normalize() );
+	}
 }
