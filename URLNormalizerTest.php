@@ -130,4 +130,11 @@ class URLNormalizerTest extends PHPUnit_Framework_TestCase
 	    $this->fixture->setUrl( $url );
 	    $this->assertEquals( $url, $this->fixture->normalize() );
 	}
+
+    public function testPortNumbersArePreserved() {
+        $url = 'http://example.com:81/index.html';
+
+        $this->fixture->setUrl( $url );
+        $this->assertEquals( $url, $this->fixture->normalize() );
+    }
 }

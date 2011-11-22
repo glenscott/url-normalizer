@@ -105,7 +105,12 @@ class URLNormalizer {
             $fragment = '#' . $this->fragment;
         }
 
-        return $this->scheme . $this->host . $this->port . $this->user . $this->pass . $this->path . $query . $fragment;
+        $port = '';
+        if ( $this->port ) {
+            $port = ':' . $this->port;
+        }
+
+        return $this->scheme . $this->host . $port . $this->user . $this->pass . $this->path . $query . $fragment;
     }
 
     /**
