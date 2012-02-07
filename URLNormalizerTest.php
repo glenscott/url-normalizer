@@ -87,8 +87,6 @@ class URLNormalizerTest extends PHPUnit_Framework_TestCase
             array('/foo/bar/../../baz'  ,          '/baz'),
             //array('/foo/bar/../../../baz' ,        '/../baz'),
             array( 'a/./b/../b/',                        'a/b/' ),
-            array( '/a/b/c/./../../g',   '/a/g' ),
-            array( 'mid/content=5/../6', 'mid/6' ),
             array( '.',                  '' ),
             array( '..',                 '' ),
         );
