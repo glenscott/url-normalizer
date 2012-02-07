@@ -47,11 +47,15 @@ class URLNormalizerTest extends PHPUnit_Framework_TestCase
     }
     
     public function provider() {
-        // tests from http://en.wikipedia.org/wiki/URL_normalization
+        // tests from http://en.wikipedia.org/wiki/URL_normalization#Normalizations_that_Preserve_Semantics
         return array(
-            array( 'HTTP://www.Example.com/',            'http://www.example.com/' ),  # converting the scheme and host to lowercase
-            array( 'http://www.example.com',             'http://www.example.com/' ),  # add trailing /
-            array( 'eXAMPLE://a/./b/../b/%63/%7bfoo%7d', 'example://a/b/c/%7Bfoo%7D' ),
+                     array( 'HTTP://www.Example.com/',                     'http://www.example.com/' ),
+                     array( 'http://www.example.com/a%c2%b1b',             'http://www.example.com/a%C2%B1b' ),
+                     array( 'http://www.example.com/%7Eusername/',         'http://www.example.com/~username/' ),
+                     array( 'http://www.example.com',                      'http://www.example.com/' ),
+                     array( 'http://www.example.com:80/bar.html',          'http://www.example.com/bar.html' ),
+                     array( 'http://www.example.com/../a/b/../c/./d.html', 'http://www.example.com/a/c/d.html' ),
+                     array( 'eXAMPLE://a/./b/../b/%63/%7bfoo%7d',          'example://a/b/c/%7Bfoo%7D' ),
         );
     }
     
