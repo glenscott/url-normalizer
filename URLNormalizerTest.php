@@ -137,4 +137,11 @@ class URLNormalizerTest extends PHPUnit_Framework_TestCase
         $this->fixture->setUrl( $url );
         $this->assertEquals( $url, $this->fixture->normalize() );
     }
+    
+    public function testCaseSensitiveElementsArePreserved() {
+        $url = 'HtTp://User:Pass@www.ExAmPle.com:80/Blah';
+
+        $this->fixture->setUrl( $url );
+        $this->assertEquals( 'http://User:Pass@www.example.com/Blah', $this->fixture->normalize() );
+    }
 }
