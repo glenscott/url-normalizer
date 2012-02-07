@@ -73,13 +73,13 @@ class URLNormalizer {
     
     public function normalize() {
         if ( $this->path ) { 
-            # case normalization
+            // case normalization
             $this->path = preg_replace( '/(%([0-9abcdef][0-9abcdef]))/ex', "'%'.strtoupper('\\2')", $this->path );
             
-            # percent-encoding normalization
+            // percent-encoding normalization
             $this->path = $this->urlDecodeUnreservedChars( $this->path );
             
-            # path segment normalization
+            // path segment normalization
             $this->path = $this->removeDotSegments( $this->path );
         }
 
@@ -157,8 +157,6 @@ class URLNormalizer {
         $step      = ' ';
         
         while ( ! empty( $path ) ) {
-             //echo ++$iteration . "$step:" . $new_path . "\t\t\t\t"  . $path . "\n";
- 
              // A
             $pattern_a   = '!^(\.\./|\./)!x';
             $pattern_b_1 = '!^(/\./)!x';
@@ -168,27 +166,22 @@ class URLNormalizer {
             $pattern_e   = '!(/*[^/]*)!x';
             
             if ( preg_match( $pattern_a, $path ) ) {
-                $step = 'A';
                 // remove prefix from $path
                 $path = preg_replace( $pattern_a, '', $path );
             }
             elseif ( preg_match( $pattern_b_1, $path, $matches ) || preg_match( $pattern_b_2, $path, $matches ) ) {
-                $step = 'B';
                 $path = preg_replace( "!^" . $matches[1] . "!", '/', $path );
             }
             elseif ( preg_match( $pattern_c, $path, $matches ) ) {
-                $step = 'C';
                 $path = preg_replace( '!^' . preg_quote( $matches[1], '!' ) . '!x', '/', $path );
                 
                 # remove the last segment and its preceding "/" (if any) from output buffer
                 $new_path = preg_replace( '!/([^/]+)$!x', '', $new_path );
             }
             elseif ( preg_match( $pattern_d, $path ) ) {
-                $step = 'D';
                 $path = preg_replace( $pattern_d, $path );
             }
             else {
-                $step = 'E';
                 if ( preg_match( $pattern_e, $path, $matches ) ) {
                     $first_path_segment = $matches[1];
                     

@@ -144,4 +144,8 @@ class URLNormalizerTest extends PHPUnit_Framework_TestCase
         $this->fixture->setUrl( $url );
         $this->assertEquals( 'http://User:Pass@www.example.com/Blah', $this->fixture->normalize() );
     }
+
+    public function testSetUrlReturnsFalseWithUnparseableUrl() {
+        $this->assertFalse( $this->fixture->setUrl( '/test:2/' ) );
+    }
 }
