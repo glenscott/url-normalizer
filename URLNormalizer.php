@@ -175,11 +175,11 @@ class URLNormalizer {
             elseif ( preg_match( $pattern_c, $path, $matches ) ) {
                 $path = preg_replace( '!^' . preg_quote( $matches[1], '!' ) . '!x', '/', $path );
                 
-                # remove the last segment and its preceding "/" (if any) from output buffer
+                // remove the last segment and its preceding "/" (if any) from output buffer
                 $new_path = preg_replace( '!/([^/]+)$!x', '', $new_path );
             }
             elseif ( preg_match( $pattern_d, $path ) ) {
-                $path = preg_replace( $pattern_d, $path );
+                $path = preg_replace( $pattern_d, '', $path );
             }
             else {
                 if ( preg_match( $pattern_e, $path, $matches ) ) {
