@@ -25,6 +25,11 @@ class URLNormalizerTest extends PHPUnit_Framework_TestCase
         $this->assertTrue( method_exists( $this->fixture, 'getUrl' ) );
     }
     
+    public function testSetUrlFromConstructor() {
+    	$this->fixture = new URLNormalizer( 'http://www.example.com/' );
+    	$this->assertTrue( $this->fixture->getUrl() == 'http://www.example.com/' );
+    }
+    
     public function testSetUrl() {
         $this->assertTrue( $this->fixture->getUrl() == $this->test_url );
     }
@@ -43,6 +48,19 @@ class URLNormalizerTest extends PHPUnit_Framework_TestCase
     public function testUrlsAreNormalised( $url, $normalised_url ) {
         $this->fixture->setUrl( $url );
         
+        $this->assertEquals( $normalised_url, $this->fixture->normalize() );
+    }
+    
+    /**
+     * @dataProvider provider
+     */
+    public function testUrlsAreNormalisedAgain( $url, $normalised_url ) {
+        $this->fixture->setUrl( $url );
+        
+        // normalize once
+        $this->fixture->normalize();
+        
+        // then normalize again
         $this->assertEquals( $normalised_url, $this->fixture->normalize() );
     }
     
@@ -120,6 +138,26 @@ class URLNormalizerTest extends PHPUnit_Framework_TestCase
 					  array( 'http://example.com/' ),
 					  array( 'http://example.com:/' ),
 					  array( 'http://example.com:80/' ), );
+	}
+	
+	/**
+	 * @dataProvider schemeDataSSL
+	 *
+	 * http://www.apps.ietf.org/rfc/rfc3986.html#sec-6.2.3
+	 */
+	public function testSchemeBasedNormalizationSSL( $url ) {
+		$expected_uri = 'https://example.com/';
+	
+		$this->fixture->setUrl( $url );
+		$this->assertEquals( $expected_uri, $this->fixture->normalize() );
+	
+	}
+	
+	public function schemeDataSSL() {
+		return array( array( 'https://example.com' ),
+				array( 'https://example.com/' ),
+				array( 'https://example.com:/' ),
+				array( 'https://example.com:443/' ), );
 	}
 	
 	public function testQueryParametersArePreserved() {
