@@ -30,7 +30,7 @@ class URLNormalizer {
     private $path;
     private $query;
     private $fragment;
-    private $default_scheme_ports = array( 'http' => 80, );
+    private $default_scheme_ports = array( 'http' => 80, 'https' => 443, );
 
     public function __construct() {
         $this->scheme   = '';

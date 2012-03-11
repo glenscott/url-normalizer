@@ -135,6 +135,26 @@ class URLNormalizerTest extends PHPUnit_Framework_TestCase
 					  array( 'http://example.com:80/' ), );
 	}
 	
+	/**
+	 * @dataProvider schemeDataSSL
+	 *
+	 * http://www.apps.ietf.org/rfc/rfc3986.html#sec-6.2.3
+	 */
+	public function testSchemeBasedNormalizationSSL( $url ) {
+		$expected_uri = 'https://example.com/';
+	
+		$this->fixture->setUrl( $url );
+		$this->assertEquals( $expected_uri, $this->fixture->normalize() );
+	
+	}
+	
+	public function schemeDataSSL() {
+		return array( array( 'https://example.com' ),
+				array( 'https://example.com/' ),
+				array( 'https://example.com:/' ),
+				array( 'https://example.com:443/' ), );
+	}
+	
 	public function testQueryParametersArePreserved() {
 	    $url = 'http://fancysite.nl/links/doit.pl?id=2029';
 	    
