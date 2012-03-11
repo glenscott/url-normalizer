@@ -32,7 +32,7 @@ class URLNormalizer {
     private $fragment;
     private $default_scheme_ports = array( 'http' => 80, 'https' => 443, );
 
-    public function __construct() {
+    public function __construct( $url=null ) {
         $this->scheme   = '';
         $this->host     = '';
         $this->port     = '';
@@ -41,6 +41,10 @@ class URLNormalizer {
         $this->path     = '';
         $this->query    = '';
         $this->fragment = '';
+        
+        if ( $url ) {
+        	$this->setUrl( $url );
+        }
     }
     
     public function getUrl() {

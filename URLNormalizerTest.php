@@ -25,6 +25,11 @@ class URLNormalizerTest extends PHPUnit_Framework_TestCase
         $this->assertTrue( method_exists( $this->fixture, 'getUrl' ) );
     }
     
+    public function testSetUrlFromConstructor() {
+    	$this->fixture = new URLNormalizer( 'http://www.example.com/' );
+    	$this->assertTrue( $this->fixture->getUrl() == 'http://www.example.com/' );
+    }
+    
     public function testSetUrl() {
         $this->assertTrue( $this->fixture->getUrl() == $this->test_url );
     }
