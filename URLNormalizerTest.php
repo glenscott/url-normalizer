@@ -46,6 +46,19 @@ class URLNormalizerTest extends PHPUnit_Framework_TestCase
         $this->assertEquals( $normalised_url, $this->fixture->normalize() );
     }
     
+    /**
+     * @dataProvider provider
+     */
+    public function testUrlsAreNormalisedAgain( $url, $normalised_url ) {
+        $this->fixture->setUrl( $url );
+        
+        // normalize once
+        $this->fixture->normalize();
+        
+        // then normalize again
+        $this->assertEquals( $normalised_url, $this->fixture->normalize() );
+    }
+    
     public function provider() {
         // tests from http://en.wikipedia.org/wiki/URL_normalization#Normalizations_that_Preserve_Semantics
         return array(

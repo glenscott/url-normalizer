@@ -83,8 +83,10 @@ class URLNormalizer {
             $this->path = $this->removeDotSegments( $this->path );
         }
 
+        $scheme = '';
         if ( $this->scheme ) { 
-            $this->scheme = strtolower( $this->scheme ) . '://';
+            $this->scheme = strtolower( $this->scheme );
+            $scheme = $this->scheme . '://';
         }
         
         if ( $this->host ) {
@@ -115,7 +117,7 @@ class URLNormalizer {
             $authorization = $this->user . ':' . $this->pass . '@';
         }
 
-        return $this->scheme . $authorization . $this->host . $port . $this->path . $query . $fragment;
+        return $scheme . $authorization . $this->host . $port . $this->path . $query . $fragment;
     }
 
     /**
@@ -196,8 +198,7 @@ class URLNormalizer {
     }
 
     private function schemeBasedNormalization() {
-        $scheme = str_replace( '://', '', $this->scheme );
-        if ( isset( $this->default_scheme_ports[$scheme] ) && $this->default_scheme_ports[$scheme] == $this->port ) {
+        if ( isset( $this->default_scheme_ports[$this->scheme] ) && $this->default_scheme_ports[$this->scheme] == $this->port ) {
             $this->port = '';
         }
     }
