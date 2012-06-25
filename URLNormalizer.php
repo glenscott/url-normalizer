@@ -148,8 +148,12 @@ class URLNormalizer {
         $unreserved[] = dechex( ord( '_' ) );
         $unreserved[] = dechex( ord( '~' ) );
         
-        return preg_replace_callback( array_map( create_function( '$str', 'return "/%" . strtoupper( $str ) . "/x";' ), $unreserved ), create_function( '$matches', 'return chr( hexdec( $matches[0] ));' ), $string );
-        //return chr( hexdec( '%63' ) );
+        $unreserved_char_func = create_function( '$str', 'return "/%" . strtoupper( $str ) . "/x";' );
+        $decode_char_func     = create_function( '$matches', 'return chr( hexdec( $matches[0] ));' );
+
+        return preg_replace_callback( array_map( $unreserved_char_func, $unreserved ), 
+                                      $decode_char_func, 
+                                      $string );
     }
         
     /**
