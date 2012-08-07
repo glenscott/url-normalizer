@@ -10,7 +10,7 @@ class URLNormalizerTest extends PHPUnit_Framework_TestCase
     protected function setUp()
     {
         $this->fixture = new URLNormalizer();
-        $this->fixture->setUrl( $this->test_url );
+        //$this->fixture->setUrl( $this->test_url );
     }
     
     public function testClassCanBeInstantiated() {
@@ -31,6 +31,7 @@ class URLNormalizerTest extends PHPUnit_Framework_TestCase
     }
     
     public function testSetUrl() {
+        $this->fixture->setUrl( $this->test_url );
         $this->assertTrue( $this->fixture->getUrl() == $this->test_url );
     }
     
@@ -39,6 +40,7 @@ class URLNormalizerTest extends PHPUnit_Framework_TestCase
     }
     
     public function testSchemeExtractedFromUrl() {
+        $this->fixture->setUrl( $this->test_url );
         $this->assertTrue( $this->fixture->getScheme() == 'http' );
     }
     
@@ -190,5 +192,12 @@ class URLNormalizerTest extends PHPUnit_Framework_TestCase
 
     public function testSetUrlReturnsFalseWithUnparseableUrl() {
         $this->assertFalse( $this->fixture->setUrl( '/test:2/' ) );
+    }
+
+    public function testTrailingSlashIsAdded() {
+        $url = 'http://example.com';
+
+        $this->fixture->setUrl( $url );
+        $this->assertEquals( 'http://example.com/', $this->fixture->normalize() );
     }
 }

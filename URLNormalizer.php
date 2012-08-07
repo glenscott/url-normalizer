@@ -86,7 +86,10 @@ class URLNormalizer {
             // path segment normalization
             $this->path = $this->removeDotSegments( $this->path );
         }
-
+        else {
+            $this->path = '/';
+        }
+        
         $scheme = '';
         if ( $this->scheme ) { 
             $this->scheme = strtolower( $this->scheme );
