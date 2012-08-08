@@ -31,6 +31,7 @@ class URLNormalizer {
     private $query;
     private $fragment;
     private $default_scheme_ports = array( 'http' => 80, 'https' => 443, );
+    private $components = array( 'scheme', 'host', 'port', 'user', 'pass', 'path', 'query', 'fragment', );
 
     public function __construct( $url=null ) {
         $this->scheme   = '';
@@ -61,9 +62,23 @@ class URLNormalizer {
             return false;
         }
         else {
+
             foreach ( $url_components as $key => $value ) {
                 if ( property_exists( $this, $key ) ) {
                     $this->$key = $value;
+                }
+            }
+
+            // Reset missing properties for reuse
+
+            $missing_components = array_diff (
+                array_values( $this->components ),
+                array_keys( $url_components )
+            );
+
+            foreach ( $missing_components as $key ) {
+                if ( property_exists( $this, $key ) ) {
+                    $this->$key = '';
                 }
             }
 
