@@ -2,14 +2,14 @@
 
 /**
  * Syntax based normalization of URI's
- * 
- * This normalises URI's based on the specification RFC 3986 
+ *
+ * This normalises URI's based on the specification RFC 3986
  * http://www.apps.ietf.org/rfc/rfc3986.html
- * 
+ *
  * Example usage:
  * <code>
  * require_once 'URLNormalizer.php';
- * 
+ *
  * $url = 'eXAMPLE://a/./b/../b/%63/%7bfoo%7d';
  * $un = new URLNormalizer();
  * $un->setUrl( $url );
@@ -41,22 +41,22 @@ class URLNormalizer {
         $this->path     = '';
         $this->query    = '';
         $this->fragment = '';
-        
+
         if ( $url ) {
         	$this->setUrl( $url );
         }
     }
-    
+
     public function getUrl() {
         return $this->url;
     }
-    
-    public function setUrl( $url ) { 
+
+    public function setUrl( $url ) {
         $this->url = $url;
 
         // parse URL into respective parts
         $url_components = parse_url( $this->url );
-        
+
         if ( ! $url_components ) {
             return false;
         }
@@ -66,65 +66,98 @@ class URLNormalizer {
                     $this->$key = $value;
                 }
             }
-            
+
             return true;
         }
     }
-    
+
     public function getScheme() {
         return $this->scheme;
     }
-    
+
     public function normalize() {
-        if ( $this->path ) { 
-            // case normalization
+
+        // URI Syntax Components
+        // scheme authority path query fragment
+        // @link http://www.apps.ietf.org/rfc/rfc3986.html#sec-3
+
+        // Scheme
+        // @link http://www.apps.ietf.org/rfc/rfc3986.html#sec-3.1
+
+        if ( $this->scheme ) {
+            // Converting the scheme to lower case
+            $this->scheme = strtolower( $this->scheme ) . ':';
+        }
+
+        // Authority
+        // @link http://www.apps.ietf.org/rfc/rfc3986.html#sec-3.2
+
+        $authority = '';
+        if ( $this->host ) {
+            $authority .= '//';
+
+            // User Information
+            // @link http://www.apps.ietf.org/rfc/rfc3986.html#sec-3.2.1
+
+            if ( $this->user ) {
+                if ( $this->pass ) {
+                    $authority .= $this->user . ':' . $this->pass . '@';
+                }
+                else {
+                    $authority .= $this->user . '@';
+                }
+            }
+
+            // Host
+            // @link http://www.apps.ietf.org/rfc/rfc3986.html#sec-3.2.2
+
+            // Converting the host to lower case
+            $authority .= strtolower( $this->host );
+
+            // Port
+            // @link http://www.apps.ietf.org/rfc/rfc3986.html#sec-3.2.3
+
+            // Removing the default port
+            $this->schemeBasedNormalization();
+
+            if ( $this->port ) {
+                $authority .= ':' . $this->port;
+            }
+        }
+
+        // Path
+        // @link http://www.apps.ietf.org/rfc/rfc3986.html#sec-3.3
+
+        if ( $this->path ) {
+            // Capitalizing letters in escape sequences
             $this->path = preg_replace( '/(%([0-9abcdef][0-9abcdef]))/ex', "'%'.strtoupper('\\2')", $this->path );
-            
-            // percent-encoding normalization
+
+            // Decoding percent-encoded octets of unreserved characters
             $this->path = $this->urlDecodeUnreservedChars( $this->path );
-            
-            // path segment normalization
+
+            // Removing dot-segments
             $this->path = $this->removeDotSegments( $this->path );
         }
         else {
+            // Adding trailing /
             $this->path = '/';
         }
-        
-        $scheme = '';
-        if ( $this->scheme ) { 
-            $this->scheme = strtolower( $this->scheme );
-            $scheme = $this->scheme . '://';
-        }
-        
-        if ( $this->host ) {
-            $this->host = strtolower( $this->host );
-            
-        }
 
-        $this->schemeBasedNormalization();
+        // Query
+        // @link http://www.apps.ietf.org/rfc/rfc3986.html#sec-3.4
 
-        // reconstruct uri
-        $query = '';
         if ( $this->query ) {
-            $query = '?' . $this->query;
+            $this->query = '?' . $this->query;
         }
-        
-        $fragment = '';
+
+        // Fragment
+        // @link http://www.apps.ietf.org/rfc/rfc3986.html#sec-3.5
+
         if ( $this->fragment ) {
-            $fragment = '#' . $this->fragment;
+            $this->fragment = '#' . $this->fragment;
         }
 
-        $port = '';
-        if ( $this->port ) {
-            $port = ':' . $this->port;
-        }
-
-        $authorization = '';
-        if ( $this->user ) {
-            $authorization = $this->user . ':' . $this->pass . '@';
-        }
-
-        return $scheme . $authorization . $this->host . $port . $this->path . $query . $fragment;
+        return $this->scheme . $authority . $this->path . $this->query . $this->fragment;
     }
 
     /**
@@ -133,42 +166,42 @@ class URLNormalizer {
      */
     public function urlDecodeUnreservedChars( $string ) {
         $unreserved = array();
-        
+
         for ( $octet = 65; $octet <= 90; $octet++ ) {
             $unreserved[] = dechex( $octet );
         }
-        
+
         for ( $octet = 97; $octet <= 122; $octet++ ) {
             $unreserved[] = dechex( $octet );
         }
-        
+
         for ( $octet = 48; $octet <= 57; $octet++ ) {
             $unreserved[] = dechex( $octet );
         }
-        
+
         $unreserved[] = dechex( ord( '-' ) );
         $unreserved[] = dechex( ord( '.' ) );
         $unreserved[] = dechex( ord( '_' ) );
         $unreserved[] = dechex( ord( '~' ) );
-        
+
         $unreserved_char_func = create_function( '$str', 'return "/%" . strtoupper( $str ) . "/x";' );
         $decode_char_func     = create_function( '$matches', 'return chr( hexdec( $matches[0] ));' );
 
-        return preg_replace_callback( array_map( $unreserved_char_func, $unreserved ), 
-                                      $decode_char_func, 
+        return preg_replace_callback( array_map( $unreserved_char_func, $unreserved ),
+                                      $decode_char_func,
                                       $string );
     }
-        
+
     /**
      * Path segment normalization
      * http://www.apps.ietf.org/rfc/rfc3986.html#sec-5.2.4
      */
     public function removeDotSegments( $path ) {
         $new_path = '';
-        
+
         $iteration = 0;
         $step      = ' ';
-        
+
         while ( ! empty( $path ) ) {
              // A
             $pattern_a   = '!^(\.\./|\./)!x';
@@ -177,7 +210,7 @@ class URLNormalizer {
             $pattern_c   = '!^(/\.\./|/\.\.)!x';
             $pattern_d   = '!^(\.|\.\.)$!x';
             $pattern_e   = '!(/*[^/]*)!x';
-            
+
             if ( preg_match( $pattern_a, $path ) ) {
                 // remove prefix from $path
                 $path = preg_replace( $pattern_a, '', $path );
@@ -187,7 +220,7 @@ class URLNormalizer {
             }
             elseif ( preg_match( $pattern_c, $path, $matches ) ) {
                 $path = preg_replace( '!^' . preg_quote( $matches[1], '!' ) . '!x', '/', $path );
-                
+
                 // remove the last segment and its preceding "/" (if any) from output buffer
                 $new_path = preg_replace( '!/([^/]+)$!x', '', $new_path );
             }
@@ -197,14 +230,14 @@ class URLNormalizer {
             else {
                 if ( preg_match( $pattern_e, $path, $matches ) ) {
                     $first_path_segment = $matches[1];
-                    
+
                     $path = preg_replace( '/^' . preg_quote( $first_path_segment, '/' ) . '/', '', $path, 1 );
-                    
+
                     $new_path .= $first_path_segment;
                 }
             }
         }
-        
+
         return $new_path;
     }
 
