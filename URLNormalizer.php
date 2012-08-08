@@ -157,7 +157,9 @@ class URLNormalizer {
             $this->fragment = '#' . $this->fragment;
         }
 
-        return $this->scheme . $authority . $this->path . $this->query . $this->fragment;
+        $this->setUrl( $this->scheme . $authority . $this->path . $this->query . $this->fragment );
+
+        return $this->getUrl();
     }
 
     /**
