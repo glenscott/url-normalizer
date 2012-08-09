@@ -216,9 +216,6 @@ class URLNormalizer {
     public function removeDotSegments( $path ) {
         $new_path = '';
 
-        $iteration = 0;
-        $step      = ' ';
-
         while ( ! empty( $path ) ) {
              // A
             $pattern_a   = '!^(\.\./|\./)!x';
