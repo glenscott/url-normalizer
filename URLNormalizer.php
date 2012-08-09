@@ -101,7 +101,7 @@ class URLNormalizer {
 
         if ( $this->scheme ) {
             // Converting the scheme to lower case
-            $this->scheme = strtolower( $this->scheme ) . ':';
+            $this->scheme = strtolower( $this->scheme );
         }
 
         // Authority
@@ -172,7 +172,7 @@ class URLNormalizer {
             $this->fragment = '#' . $this->fragment;
         }
 
-        $this->setUrl( $this->scheme . $authority . $this->path . $this->query . $this->fragment );
+        $this->setUrl( $this->scheme . $this->getSchemeSeparator() . $authority . $this->path . $this->query . $this->fragment );
 
         return $this->getUrl();
     }
@@ -261,6 +261,20 @@ class URLNormalizer {
     private function schemeBasedNormalization() {
         if ( isset( $this->default_scheme_ports[$this->scheme] ) && $this->default_scheme_ports[$this->scheme] == $this->port ) {
             $this->port = '';
+        }
+    }
+
+    /**
+     * If a scheme is provided, it should be separated from the rest of the object by a colon
+     *
+     * @return string
+     */
+    private function getSchemeSeparator() {
+        if ( $this->scheme ) {
+            return ':';
+        }
+        else {
+            return '';
         }
     }
 }
