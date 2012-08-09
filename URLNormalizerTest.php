@@ -200,4 +200,31 @@ class URLNormalizerTest extends PHPUnit_Framework_TestCase
         $this->fixture->setUrl( $url );
         $this->assertEquals( 'http://example.com/', $this->fixture->normalize() );
     }
+
+    public function testDoubleSlashNotAddedToSchemeIfNoHost() {
+        $uri = 'mailto:mail@example.com';
+
+        $this->fixture->setUrl( $uri );
+        $this->assertEquals( 'mailto:mail@example.com', $this->fixture->normalize() );
+    }
+
+    public function testColonNotAddedToUsernameWhenNoPassword() {
+        $uri = 'http://user@example.com/';
+
+        $this->fixture->setUrl( $uri );
+        $this->assertEquals( 'http://user@example.com/', $this->fixture->normalize() );
+    }
+
+    public function testPortAndFragmentDoNotPersistBetweenCalls() {
+        $this->fixture->setUrl( 'http://example.com/path/?query#fragment' );
+        $this->fixture->normalize();
+
+        $uri = 'http://example.com:400/';
+        $this->fixture->setUrl( $uri );
+        $this->assertEquals( $uri, $this->fixture->normalize() );
+
+        $uri = 'http://example.com/';
+        $this->fixture->setUrl( $uri );
+        $this->assertEquals( $uri, $this->fixture->normalize() );        
+    }
 }
