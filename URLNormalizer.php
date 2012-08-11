@@ -30,19 +30,10 @@ class URLNormalizer {
     private $path;
     private $query;
     private $fragment;
-    private $default_scheme_ports = array( 'http' => 80, 'https' => 443, );
+    private $default_scheme_ports = array( 'http:' => 80, 'https:' => 443, );
     private $components = array( 'scheme', 'host', 'port', 'user', 'pass', 'path', 'query', 'fragment', );
 
     public function __construct( $url=null ) {
-        $this->scheme   = '';
-        $this->host     = '';
-        $this->port     = '';
-        $this->user     = '';
-        $this->pass     = '';
-        $this->path     = '';
-        $this->query    = '';
-        $this->fragment = '';
-
         if ( $url ) {
         	$this->setUrl( $url );
         }
@@ -59,18 +50,27 @@ class URLNormalizer {
         $url_components = parse_url( $this->url );
 
         if ( ! $url_components ) {
+            // Reset URL
+            $this->url = '';
+
+            // Flush properties
+            foreach ( $this->components as $key ) {
+                if ( property_exists( $this, $key ) ) {
+                    $this->$key = '';
+                }
+            }
+
             return false;
         }
         else {
-
+            // Update properties
             foreach ( $url_components as $key => $value ) {
                 if ( property_exists( $this, $key ) ) {
                     $this->$key = $value;
                 }
             }
 
-            // Reset missing properties for reuse
-
+            // Flush missing components
             $missing_components = array_diff (
                 array_values( $this->components ),
                 array_keys( $url_components )
@@ -86,10 +86,6 @@ class URLNormalizer {
         }
     }
 
-    public function getScheme() {
-        return $this->scheme;
-    }
-
     public function normalize() {
 
         // URI Syntax Components
@@ -101,7 +97,7 @@ class URLNormalizer {
 
         if ( $this->scheme ) {
             // Converting the scheme to lower case
-            $this->scheme = strtolower( $this->scheme );
+            $this->scheme = strtolower( $this->scheme ) . ':';
         }
 
         // Authority
@@ -133,7 +129,10 @@ class URLNormalizer {
             // @link http://www.apps.ietf.org/rfc/rfc3986.html#sec-3.2.3
 
             // Removing the default port
-            $this->schemeBasedNormalization();
+            if ( isset( $this->default_scheme_ports[$this->scheme] )
+                    && $this->port == $this->default_scheme_ports[$this->scheme]) {
+                $this->port = '';
+            }
 
             if ( $this->port ) {
                 $authority .= ':' . $this->port;
@@ -144,16 +143,15 @@ class URLNormalizer {
         // @link http://www.apps.ietf.org/rfc/rfc3986.html#sec-3.3
 
         if ( $this->path ) {
-            // Capitalizing letters in escape sequences
-            $this->path = preg_replace( '/(%([0-9abcdef][0-9abcdef]))/ex', "'%'.strtoupper('\\2')", $this->path );
-
-            // Decoding percent-encoded octets of unreserved characters
-            $this->path = $this->urlDecodeUnreservedChars( $this->path );
-
             // Removing dot-segments
             $this->path = $this->removeDotSegments( $this->path );
+
+            $this->path = rawurldecode( $this->path );
+            $this->path = rawurlencode( $this->path );
+            $this->path = str_replace( array( '%2F', '%3A', '%40' ), array( '/', ':', '@' ), $this->path );
         }
-        else {
+        // Add default path only when valid URL is present
+        elseif ( $this->url ) {
             // Adding trailing /
             $this->path = '/';
         }
@@ -162,51 +160,29 @@ class URLNormalizer {
         // @link http://www.apps.ietf.org/rfc/rfc3986.html#sec-3.4
 
         if ( $this->query ) {
-            $this->query = '?' . $this->query;
+            parse_str( $this->query, $query );
+
+            $keys = array_map( 'rawurldecode', array_keys( $query ) );
+            $values = array_map( 'rawurldecode', array_values( $query ) );
+            $query = array_combine( $keys, $values );
+
+            $this->query = '?' . http_build_query( $query, null, '&', PHP_QUERY_RFC3986 );
+            // Fix http_build_query adding equals sign to empty keys
+            $this->query = str_replace( '=&', '&', rtrim( $this->query, '=' ));
         }
 
         // Fragment
         // @link http://www.apps.ietf.org/rfc/rfc3986.html#sec-3.5
 
         if ( $this->fragment ) {
+            $this->fragment = rawurldecode( $this->fragment );
+            $this->fragment = rawurlencode( $this->fragment );
             $this->fragment = '#' . $this->fragment;
         }
 
-        $this->setUrl( $this->scheme . $this->getSchemeSeparator() . $authority . $this->path . $this->query . $this->fragment );
+        $this->setUrl( $this->scheme . $authority . $this->path . $this->query . $this->fragment );
 
         return $this->getUrl();
-    }
-
-    /**
-     * Decode unreserved characters
-     * http://www.apps.ietf.org/rfc/rfc3986.html#sec-2.3
-     */
-    public function urlDecodeUnreservedChars( $string ) {
-        $unreserved = array();
-
-        for ( $octet = 65; $octet <= 90; $octet++ ) {
-            $unreserved[] = dechex( $octet );
-        }
-
-        for ( $octet = 97; $octet <= 122; $octet++ ) {
-            $unreserved[] = dechex( $octet );
-        }
-
-        for ( $octet = 48; $octet <= 57; $octet++ ) {
-            $unreserved[] = dechex( $octet );
-        }
-
-        $unreserved[] = dechex( ord( '-' ) );
-        $unreserved[] = dechex( ord( '.' ) );
-        $unreserved[] = dechex( ord( '_' ) );
-        $unreserved[] = dechex( ord( '~' ) );
-
-        $unreserved_char_func = create_function( '$str', 'return "/%" . strtoupper( $str ) . "/x";' );
-        $decode_char_func     = create_function( '$matches', 'return chr( hexdec( $matches[0] ));' );
-
-        return preg_replace_callback( array_map( $unreserved_char_func, $unreserved ),
-                                      $decode_char_func,
-                                      $string );
     }
 
     /**
@@ -253,25 +229,5 @@ class URLNormalizer {
         }
 
         return $new_path;
-    }
-
-    private function schemeBasedNormalization() {
-        if ( isset( $this->default_scheme_ports[$this->scheme] ) && $this->default_scheme_ports[$this->scheme] == $this->port ) {
-            $this->port = '';
-        }
-    }
-
-    /**
-     * If a scheme is provided, it should be separated from the rest of the object by a colon
-     *
-     * @return string
-     */
-    private function getSchemeSeparator() {
-        if ( $this->scheme ) {
-            return ':';
-        }
-        else {
-            return '';
-        }
     }
 }
