@@ -145,10 +145,7 @@ class URLNormalizer {
         if ( $this->path ) {
             // Removing dot-segments
             $this->path = $this->removeDotSegments( $this->path );
-
-            $this->path = rawurldecode( $this->path );
-            $this->path = rawurlencode( $this->path );
-            $this->path = str_replace( array( '%2F', '%3A', '%40' ), array( '/', ':', '@' ), $this->path );
+            $this->path = $this->urlDecodeUnreservedChars( $this->path );
         }
         // Add default path only when valid URL is present
         elseif ( $this->url ) {
@@ -166,7 +163,8 @@ class URLNormalizer {
             $values = array_map( 'rawurldecode', array_values( $query ) );
             $query = array_combine( $keys, $values );
 
-            $this->query = '?' . http_build_query( $query, null, '&', PHP_QUERY_RFC3986 );
+            $this->query = '?' . str_replace( '+', '%20', http_build_query( $query, null, '&' ) );
+            
             // Fix http_build_query adding equals sign to empty keys
             $this->query = str_replace( '=&', '&', rtrim( $this->query, '=' ));
         }
@@ -229,5 +227,22 @@ class URLNormalizer {
         }
 
         return $new_path;
+    }
+
+    public function getScheme() {
+        return $this->scheme;
+    }
+
+    /**
+     * Decode unreserved characters
+     * 
+     * @link http://www.apps.ietf.org/rfc/rfc3986.html#sec-2.3
+     */
+    public function urlDecodeUnreservedChars( $string ) {
+        $string = rawurldecode( $string );
+        $string = rawurlencode( $string );
+        $string = str_replace( array( '%2F', '%3A', '%40' ), array( '/', ':', '@' ), $string );
+
+        return $string;
     }
 }

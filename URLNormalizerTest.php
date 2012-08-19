@@ -118,8 +118,8 @@ class URLNormalizerTest extends PHPUnit_Framework_TestCase
     
     public function testDecodingUnreservedUrlChars() {
         $this->assertEquals( 'c', $this->fixture->urlDecodeUnreservedChars( '%63' ) );
-        $this->assertEquals( 'c/%7b', $this->fixture->urlDecodeUnreservedChars( '%63/%7b' ) );
-        $this->assertEquals( 'eXAMPLE://a/./b/../b/c/%7bfoo%7d', $this->fixture->urlDecodeUnreservedChars( 'eXAMPLE://a/./b/../b/%63/%7bfoo%7d' ) );
+        $this->assertEquals( 'c/%7B', $this->fixture->urlDecodeUnreservedChars( '%63/%7b' ) );
+        $this->assertEquals( 'eXAMPLE://a/./b/../b/c/%7Bfoo%7D', $this->fixture->urlDecodeUnreservedChars( 'eXAMPLE://a/./b/../b/%63/%7bfoo%7d' ) );
     }
 
 	/**
