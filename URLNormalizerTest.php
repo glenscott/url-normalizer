@@ -227,4 +227,16 @@ class URLNormalizerTest extends PHPUnit_Framework_TestCase
         $this->fixture->setUrl( $uri );
         $this->assertEquals( $uri, $this->fixture->normalize() );        
     }
+
+    public function testEbayImageUrl() {
+        $this->fixture->setUrl( 'http://i.ebayimg.com/t/O05520-Adidas-OM-Olympique-Marseille-Jacket-Hooded-UK-S-/00/s/NDAwWDQwMA==/$(KGrHqF,!lMF!iFJh4nmBQflyg7GSw~~60_12.JPG' );
+        $this->assertEquals( 'http://i.ebayimg.com/t/O05520-Adidas-OM-Olympique-Marseille-Jacket-Hooded-UK-S-/00/s/NDAwWDQwMA==/$(KGrHqF,!lMF!iFJh4nmBQflyg7GSw~~60_12.JPG',
+                             $this->fixture->normalize() );
+
+    }
+
+    public function testReservedCharactersInPathSegmentAreNotEncoded() {
+        $this->fixture->setUrl( "http://www.example.com/!$&'()*+,;=/" );
+        $this->assertEquals( "http://www.example.com/!$&'()*+,;=/", $this->fixture->normalize() );
+    }
 }

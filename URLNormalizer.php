@@ -146,6 +146,7 @@ class URLNormalizer {
             // Removing dot-segments
             $this->path = $this->removeDotSegments( $this->path );
             $this->path = $this->urlDecodeUnreservedChars( $this->path );
+            $this->path = $this->urlDecodeReservedSubDelimChars( $this->path );
         }
         // Add default path only when valid URL is present
         elseif ( $this->url ) {
@@ -244,5 +245,15 @@ class URLNormalizer {
         $string = str_replace( array( '%2F', '%3A', '%40' ), array( '/', ':', '@' ), $string );
 
         return $string;
+    }
+
+    /**
+     * Decode reserved sub-delims
+     *
+     * @link http://www.apps.ietf.org/rfc/rfc3986.html#sec-2.2
+     */
+    public function urlDecodeReservedSubDelimChars( $string ) {
+        return str_replace( array( '%21', '%24', '%26', '%27', '%28', '%29', '%2A', '%2B', '%2C', '%3B', '%3D' ), 
+                            array( '!', '$', '&', "'", '(', ')', '*', '+', ',', ';', '=' ), $string );
     }
 }
