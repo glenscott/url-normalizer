@@ -38,6 +38,8 @@ For more information about these normalizations, please see the following Wikipe
 
 http://en.wikipedia.org/wiki/URL_normalization#Normalizations_that_Preserve_Semantics
 
+For license information, please see LICENSE file.
+
 TODO:
 
 Add further scheme-based normalization steps, as detailed in section 6.2.3 of the RFC.
