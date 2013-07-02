@@ -6,10 +6,12 @@ http://www.apps.ietf.org/rfc/rfc3986.html
 
 Example usage:
 <code>
-require_once 'URLNormalizer.php';
+use URL\Normalizer;
+
+require_once 'Normalizer.php';
 
 $url = 'eXAMPLE://a/./b/../b/%63/%7bfoo%7d';
-$un = new URLNormalizer();
+$un = new Normalizer();
 $un->setUrl( $url );
 echo $un->normalize();
 

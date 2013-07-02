@@ -1,16 +1,17 @@
 <?php
 
-require_once 'URLNormalizer.php';
+require_once __DIR__ . '/../../vendor/autoload.php';  // Autoload files using Composer method
 
-class URLNormalizerTest extends PHPUnit_Framework_TestCase
+use URL\Normalizer;
+
+class NormalizerTest extends \PHPUnit_Framework_TestCase
 {
     protected $fixture;
     private $test_url = 'http://www.yahoo.com/';
     
     protected function setUp()
     {
-        $this->fixture = new URLNormalizer();
-        //$this->fixture->setUrl( $this->test_url );
+        $this->fixture = new Normalizer();
     }
     
     public function testClassCanBeInstantiated() {
@@ -18,7 +19,7 @@ class URLNormalizerTest extends PHPUnit_Framework_TestCase
     }
     
     public function testObjectIsOfCorrectType() {
-        $this->assertTrue( get_class( $this->fixture ) == 'URLNormalizer' );
+        $this->assertTrue( get_class( $this->fixture ) == 'URL\Normalizer' );
     }
     
     public function testObjectHasGetUrlMethod() {
@@ -26,7 +27,7 @@ class URLNormalizerTest extends PHPUnit_Framework_TestCase
     }
     
     public function testSetUrlFromConstructor() {
-    	$this->fixture = new URLNormalizer( 'http://www.example.com/' );
+    	$this->fixture = new Normalizer( 'http://www.example.com/' );
     	$this->assertTrue( $this->fixture->getUrl() == 'http://www.example.com/' );
     }
     

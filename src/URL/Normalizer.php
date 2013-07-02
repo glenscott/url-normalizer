@@ -1,5 +1,7 @@
 <?php
 
+namespace URL;
+
 /**
  * Syntax based normalization of URI's
  *
@@ -8,7 +10,7 @@
  *
  * Example usage:
  * <code>
- * require_once 'URLNormalizer.php';
+ * require_once 'Normalizer.php';
  *
  * $url = 'eXAMPLE://a/./b/../b/%63/%7bfoo%7d';
  * $un = new URLNormalizer();
@@ -18,9 +20,9 @@
  * // result: "example://a/b/c/%7Bfoo%7D"
  * </code>
  *
- * @author Glen Scott <glen_scott@yahoo.co.uk>
+ * @author Glen Scott <glen@glenscott.co.uk>
  */
-class URLNormalizer {
+class Normalizer {
     private $url;
     private $scheme;
     private $host;

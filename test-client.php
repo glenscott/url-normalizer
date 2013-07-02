@@ -2,9 +2,9 @@
 
 echo '<pre>';
 
-require_once 'URLNormalizer.php';
+require_once 'src/URL/Normalizer.php';
 
-$un = new URLNormalizer();
+$un = new URL\Normalizer();
 
 test('eXAMPLE://a/./b/../b/%63/%7bfoo%7d', 'example://a/b/c/%7Bfoo%7D');
 test('http://www.example.com', 'http://www.example.com/');
