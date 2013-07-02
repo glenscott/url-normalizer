@@ -39,6 +39,19 @@ class URLNormalizer {
         }
     }
 
+    private function getQuery($query) {
+        $qs = array();
+        foreach($query as $qk => $qv) {
+            if(is_array($qv)) {
+                $qs[rawurldecode($qk)] = $this->getQuery($qv);
+            }
+            else {
+                $qs[rawurldecode($qk)] = rawurldecode($qv);
+            }
+        }
+        return $qs;
+    }
+
     public function getUrl() {
         return $this->url;
     }
@@ -160,11 +173,9 @@ class URLNormalizer {
         if ( $this->query ) {
             parse_str( $this->query, $query );
 
-            $keys = array_map( 'rawurldecode', array_keys( $query ) );
-            $values = array_map( 'rawurldecode', array_values( $query ) );
-            $query = array_combine( $keys, $values );
-
-            $this->query = '?' . str_replace( '+', '%20', http_build_query( $query, null, '&' ) );
+            //encodes every parameter correctly
+            $qs = $this->getQuery($query);
+            $this->query = '?' . str_replace( '+', '%20', http_build_query( $qs, null, '&' ) );
             
             // Fix http_build_query adding equals sign to empty keys
             $this->query = str_replace( '=&', '&', rtrim( $this->query, '=' ));
