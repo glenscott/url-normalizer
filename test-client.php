@@ -62,6 +62,8 @@ test('http://example.com/', 'http://example.com/');
 
 test('http://example.com/path/?query=space value', 'http://example.com/path/?query=space%20value');
 
+test('http://www.example.com/?array[key]=value', 'http://www.example.com/?array%5Bkey%5D=value');
+
 /**
  * Test URL Normalization
  *

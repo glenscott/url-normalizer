@@ -239,4 +239,9 @@ class URLNormalizerTest extends PHPUnit_Framework_TestCase
         $this->fixture->setUrl( "http://www.example.com/!$&'()*+,;=/" );
         $this->assertEquals( "http://www.example.com/!$&'()*+,;=/", $this->fixture->normalize() );
     }
+
+    public function testQueryWithArray() {
+        $this->fixture->setUrl('http://www.example.com/?array[key]=value');
+        $this->assertEquals('http://www.example.com/?array%5Bkey%5D=value', $this->fixture->normalize() );
+    }
 }
