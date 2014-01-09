@@ -1,6 +1,6 @@
 <?php
 
-require_once __DIR__ . '/../../vendor/autoload.php';  // Autoload files using Composer method
+require_once dirname( __FILE__ ) . '/../../src/URL/Normalizer.php';
 
 use URL\Normalizer;
 
@@ -244,5 +244,10 @@ class NormalizerTest extends \PHPUnit_Framework_TestCase
     public function testQueryWithArray() {
         $this->fixture->setUrl('http://www.example.com/?array[key]=value');
         $this->assertEquals('http://www.example.com/?array%5Bkey%5D=value', $this->fixture->normalize() );
+    }
+
+    public function testSpacesInQueryStringAreCorrectlyEncoded() {
+        $this->fixture->setUrl( 'http://www.example.com/?a space' );
+        $this->assertEquals( 'http://www.example.com/?a%20space', $this->fixture->normalize() );
     }
 }

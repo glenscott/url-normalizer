@@ -173,7 +173,7 @@ class Normalizer {
         // @link http://www.apps.ietf.org/rfc/rfc3986.html#sec-3.4
 
         if ( $this->query ) {
-            parse_str( $this->query, $query );
+            $query = $this->parseStr( $this->query );
 
             //encodes every parameter correctly
             $qs = $this->getQuery($query);
@@ -268,5 +268,24 @@ class Normalizer {
     public function urlDecodeReservedSubDelimChars( $string ) {
         return str_replace( array( '%21', '%24', '%26', '%27', '%28', '%29', '%2A', '%2B', '%2C', '%3B', '%3D' ), 
                             array( '!', '$', '&', "'", '(', ')', '*', '+', ',', ';', '=' ), $string );
+    }
+
+    /**
+     * Replacement for PHP's parse_string which does not deal with spaces or dots in key names
+     *
+     * @param string $string URL query string
+     * @return array key value pairs
+     */
+     private function parseStr( $string ) {
+        $params = array();
+                
+        $pairs = explode( '&', $string );
+
+        foreach ( $pairs as $pair ) {
+            list( $k, $v ) = explode( '=', $pair );
+            $params[$k] = $v;
+        }
+
+        return $params;
     }
 }
