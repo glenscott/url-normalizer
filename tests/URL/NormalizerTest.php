@@ -252,9 +252,7 @@ class NormalizerTest extends \PHPUnit_Framework_TestCase
     }
 
     public function testQueryValuesThatContainEqualsSignsArePreserved() {
-        $url = 'http://www.example.com/?key=v1=v2';
-
-        $this->fixture->setUrl( $url );
-        $this->assertEquals( $url, $this->fixture->normalize() );
+        $this->fixture->setUrl( 'http://www.example.com/?key=v1=v2' );
+        $this->assertEquals( 'http://www.example.com/?key=v1%3Dv2', $this->fixture->normalize() );
     }
 }

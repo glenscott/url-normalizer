@@ -179,8 +179,6 @@ class Normalizer {
             $qs = $this->getQuery($query);
             $this->query = '?' . str_replace( '+', '%20', http_build_query( $qs, null, '&' ) );
             
-            $this->query = $this->urlDecodeReservedSubDelimChars($this->query);
-
             // Fix http_build_query adding equals sign to empty keys
             $this->query = str_replace( '=&', '&', rtrim( $this->query, '=' ));
         }
