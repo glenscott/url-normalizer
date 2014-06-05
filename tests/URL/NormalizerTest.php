@@ -250,4 +250,11 @@ class NormalizerTest extends \PHPUnit_Framework_TestCase
         $this->fixture->setUrl( 'http://www.example.com/?a space' );
         $this->assertEquals( 'http://www.example.com/?a%20space', $this->fixture->normalize() );
     }
+
+    public function testQueryValuesThatContainEqualsSignsArePreserved() {
+        $url = 'http://www.example.com/?key=v1=v2';
+
+        $this->fixture->setUrl( $url );
+        $this->assertEquals( $url, $this->fixture->normalize() );
+    }
 }
