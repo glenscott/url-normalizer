@@ -255,4 +255,13 @@ class NormalizerTest extends \PHPUnit_Framework_TestCase
         $this->fixture->setUrl( 'http://www.example.com/?key=v1=v2' );
         $this->assertEquals( 'http://www.example.com/?key=v1%3Dv2', $this->fixture->normalize() );
     }
+
+    public function testUtf8HostNames() {
+        $this->fixture->setUrl('http://www.Яндекс.РФ');
+        $this->assertEquals( 'http://www.яндекс.рф/', $this->fixture->normalize() );
+
+        $this->fixture->setUrl('http://dev.ŽiŪrKėNaS.lt');
+        $this->assertEquals( 'http://dev.žiūrkėnas.lt/', $this->fixture->normalize() );
+           
+    }
 }

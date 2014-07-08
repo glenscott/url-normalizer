@@ -62,7 +62,7 @@ class Normalizer {
         $this->url = $url;
 
         // parse URL into respective parts
-        $url_components = parse_url( $this->url );
+        $url_components = $this->mb_parse_url( $this->url );
 
         if ( ! $url_components ) {
             // Reset URL
@@ -138,7 +138,12 @@ class Normalizer {
             // @link http://www.apps.ietf.org/rfc/rfc3986.html#sec-3.2.2
 
             // Converting the host to lower case
-            $authority .= mb_strtolower( $this->host, 'UTF-8' );
+            if ( mb_detect_encoding( $this->host ) == 'UTF-8' ) {
+                $authority .= mb_strtolower( $this->host, 'UTF-8' );
+            }
+            else {
+                $authority .= strtolower( $this->host );
+            }
 
             // Port
             // @link http://www.apps.ietf.org/rfc/rfc3986.html#sec-3.2.3
@@ -288,4 +293,30 @@ class Normalizer {
 
         return $params;
     }
+
+    private function mb_parse_url($url) {
+        $result = false;
+
+        // Build arrays of values we need to decode before parsing
+        $entities = array('%21', '%2A', '%27', '%28', '%29', '%3B', '%3A', '%40', '%26', '%3D', '%24', '%2C', '%2F', '%3F', '%23', '%5B', '%5D');
+        $replacements = array('!', '*', "'", "(", ")", ";", ":", "@", "&", "=", "$", ",", "/", "?", "#", "[", "]");
+
+        // Create encoded URL with special URL characters decoded so it can be parsed
+        // All other characters will be encoded
+        $encodedURL = str_replace($entities, $replacements, urlencode($url));
+
+        // Parse the encoded URL
+        $encodedParts = parse_url($encodedURL);
+
+        // Now, decode each value of the resulting array
+        if ($encodedParts)
+        {
+            foreach ($encodedParts as $key => $value)
+            {
+                $result[$key] = urldecode(str_replace($replacements, $entities, $value));
+            }
+        }
+        return $result;
+    }
+
 }
