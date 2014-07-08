@@ -138,7 +138,7 @@ class Normalizer {
             // @link http://www.apps.ietf.org/rfc/rfc3986.html#sec-3.2.2
 
             // Converting the host to lower case
-            $authority .= strtolower( $this->host );
+            $authority .= mb_strtolower( $this->host, 'UTF-8' );
 
             // Port
             // @link http://www.apps.ietf.org/rfc/rfc3986.html#sec-3.2.3
