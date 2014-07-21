@@ -264,4 +264,9 @@ class NormalizerTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals( 'http://dev.žiūrkėnas.lt/', $this->fixture->normalize() );
            
     }
+
+    public function testTrimEndSlashes() {
+        $this->fixture->setUrl('http://www.яндекс.рф/////');
+        $this->assertEquals( 'http://www.яндекс.рф/', $this->fixture->normalize() );
+    }
 }

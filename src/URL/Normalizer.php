@@ -167,6 +167,7 @@ class Normalizer {
             $this->path = $this->removeDotSegments( $this->path );
             $this->path = $this->urlDecodeUnreservedChars( $this->path );
             $this->path = $this->urlDecodeReservedSubDelimChars( $this->path );
+            $this->path = $this->removeTrailingSlashes( $this->path );
         }
         // Add default path only when valid URL is present
         elseif ( $this->url ) {
@@ -319,4 +320,10 @@ class Normalizer {
         return $result;
     }
 
+    /*
+     * Converts //// to /
+     */
+    private function removeTrailingSlashes($path) {
+        return preg_replace('/(\/)+$/', '/', $path);
+    }
 }
