@@ -265,8 +265,18 @@ class NormalizerTest extends \PHPUnit_Framework_TestCase
            
     }
 
-    public function testTrimEndSlashes() {
+    public function testTrimMultipleSlashes() {
         $this->fixture->setUrl('http://www.яндекс.рф/////');
         $this->assertEquals( 'http://www.яндекс.рф/', $this->fixture->normalize() );
+
+        $this->fixture->setUrl('http://www.яндекс.рф/////index.php');
+        $this->assertEquals( 'http://www.яндекс.рф/index.php', $this->fixture->normalize() );
+
+        $this->fixture->setUrl('http://www.яндекс.рф///index////subdir////');
+        $this->assertEquals( 'http://www.яндекс.рф/index/subdir/', $this->fixture->normalize() );
+
+        $this->fixture->setUrl('http://www.яндекс.рф/index/../../subdir');
+        $this->assertEquals( 'http://www.яндекс.рф/subdir', $this->fixture->normalize() );
+
     }
 }

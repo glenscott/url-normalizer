@@ -163,11 +163,10 @@ class Normalizer {
         // @link http://www.apps.ietf.org/rfc/rfc3986.html#sec-3.3
 
         if ( $this->path ) {
-            // Removing dot-segments
+            $this->path = $this->removeAdditionalPathPrefixSlashes( $this->path );
             $this->path = $this->removeDotSegments( $this->path );
             $this->path = $this->urlDecodeUnreservedChars( $this->path );
             $this->path = $this->urlDecodeReservedSubDelimChars( $this->path );
-            $this->path = $this->removeTrailingSlashes( $this->path );
         }
         // Add default path only when valid URL is present
         elseif ( $this->url ) {
@@ -321,9 +320,9 @@ class Normalizer {
     }
 
     /*
-     * Converts //// to /
+     * Converts ////foo to /foo within each path segment
      */
-    private function removeTrailingSlashes($path) {
-        return preg_replace('/(\/)+$/', '/', $path);
+    private function removeAdditionalPathPrefixSlashes($path) {
+        return preg_replace( '/(\/)+/', '/', $path );
     }
 }
