@@ -279,4 +279,9 @@ class NormalizerTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals( 'http://www.яндекс.рф/subdir', $this->fixture->normalize() );
 
     }
+
+    public function testUnnamedKeysInQueryStringArePreserved() {
+        $this->fixture->setUrl('http://www.example.com/?foo[]=bar&foo[]=baz');
+        $this->assertEquals('http://www.example.com/?foo%5B%5D=bar&foo%5B%5D=baz', $this->fixture->normalize());
+    }
 }

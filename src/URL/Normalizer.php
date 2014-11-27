@@ -182,8 +182,26 @@ class Normalizer {
 
             //encodes every parameter correctly
             $qs = $this->getQuery($query);
-            $this->query = '?' . str_replace( '+', '%20', http_build_query( $qs, null, '&' ) );
-            
+
+            $this->query = '?';
+            foreach ($qs as $key => $val) {
+                if (strlen($this->query) > 1) {
+                    $this->query .= '&';
+                }
+
+                if (is_array($val)) {
+                    for ($i = 0; $i < count($val); $i++) {
+                        if ($i > 0) {
+                            $this->query .= '&';
+                        }
+                        $this->query .= rawurlencode($key) . '=' . rawurlencode($val[$i]);
+                    }
+                }
+                else {
+                    $this->query .= rawurlencode($key) . '=' . rawurlencode($val);
+                }
+            }
+
             // Fix http_build_query adding equals sign to empty keys
             $this->query = str_replace( '=&', '&', rtrim( $this->query, '=' ));
         }
@@ -288,7 +306,20 @@ class Normalizer {
 
         foreach ( $pairs as $pair ) {
             $var = explode( '=', $pair, 2 );
-            $params[$var[0]] = ( isset( $var[1] ) ? $var[1] : '' );
+
+            if (isset($params[$var[0]])) {
+                if (is_array($params[$var[0]])) {
+                    $val = ( isset( $var[1] ) ? $var[1] : '' );
+                    $params[$var[0]][] = $val;
+                }
+                else {
+                    $val = ( isset( $var[1] ) ? $var[1] : '' );
+                    $params[$var[0]] = array($params[$var[0]], $val); //( isset( $var[1] ) ? $var[1] : '' );
+                }
+            }
+            else {
+                $params[$var[0]] = ( isset( $var[1] ) ? $var[1] : '' );
+            }
         }
 
         return $params;
