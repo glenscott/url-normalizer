@@ -280,8 +280,17 @@ class NormalizerTest extends \PHPUnit_Framework_TestCase
 
     }
 
-    public function testUnnamedKeysInQueryStringArePreserved() {
-        $this->fixture->setUrl('http://www.example.com/?foo[]=bar&foo[]=baz');
-        $this->assertEquals('http://www.example.com/?foo%5B%5D=bar&foo%5B%5D=baz', $this->fixture->normalize());
+    /**
+     * @dataProvider unnamedKeys
+     */
+    public function testUnnamedKeysInQueryStringArePreserved($url, $expected) {
+        $this->fixture->setUrl($url);
+        $this->assertEquals($expected, $this->fixture->normalize());
+    }
+
+    public function unnamedKeys() {
+        return array(
+            array('http://www.example.com/?foo[]=bar&foo[]=baz', 'http://www.example.com/?foo%5B%5D=bar&foo%5B%5D=baz'),
+            );
     }
 }
