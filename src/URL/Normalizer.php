@@ -306,19 +306,18 @@ class Normalizer {
 
         foreach ( $pairs as $pair ) {
             $var = explode( '=', $pair, 2 );
+            $val = ( isset( $var[1] ) ? $var[1] : '' );
 
             if (isset($params[$var[0]])) {
                 if (is_array($params[$var[0]])) {
-                    $val = ( isset( $var[1] ) ? $var[1] : '' );
                     $params[$var[0]][] = $val;
                 }
                 else {
-                    $val = ( isset( $var[1] ) ? $var[1] : '' );
-                    $params[$var[0]] = array($params[$var[0]], $val); //( isset( $var[1] ) ? $var[1] : '' );
+                    $params[$var[0]] = array($params[$var[0]], $val);
                 }
             }
             else {
-                $params[$var[0]] = ( isset( $var[1] ) ? $var[1] : '' );
+                $params[$var[0]] = $val;
             }
         }
 
