@@ -5,15 +5,14 @@ This normalizes URI's based on the specification RFC 3986
 http://www.apps.ietf.org/rfc/rfc3986.html
 
 Example usage:
-<code>
-require_once 'vendor/autoload.php';
 
-$url = 'eXAMPLE://a/./b/../b/%63/%7bfoo%7d';
-$un = new URL\Normalizer( $url );
-echo $un->normalize();
+	require_once 'vendor/autoload.php';
 
-// result: "example://a/b/c/%7Bfoo%7D"
-</code>
+	$url = 'eXAMPLE://a/./b/../b/%63/%7bfoo%7d';
+	$un = new URL\Normalizer( $url );
+	echo $un->normalize();
+
+	// result: "example://a/b/c/%7Bfoo%7D"
 
 The normalization process preserves semantics so, for example, the following URL's are all equivalent:
 
