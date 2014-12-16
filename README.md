@@ -1,18 +1,15 @@
 
-Syntax based normalization of URI's
+# Syntax based normalization of URI's
 
 This normalizes URI's based on the specification RFC 3986 
 http://www.apps.ietf.org/rfc/rfc3986.html
 
 Example usage:
 <code>
-use URL\Normalizer;
-
-require_once 'Normalizer.php';
+require_once 'vendor/autoload.php';
 
 $url = 'eXAMPLE://a/./b/../b/%63/%7bfoo%7d';
-$un = new Normalizer();
-$un->setUrl( $url );
+$un = new URL\Normalizer( $url );
 echo $un->normalize();
 
 // result: "example://a/b/c/%7Bfoo%7D"
@@ -43,6 +40,6 @@ http://en.wikipedia.org/wiki/URL_normalization#Normalizations_that_Preserve_Sema
 
 For license information, please see LICENSE file.
 
-TODO:
+## TODO
 
 Add further scheme-based normalization steps, as detailed in section 6.2.3 of the RFC.
