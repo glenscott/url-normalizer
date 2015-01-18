@@ -34,10 +34,22 @@ class Normalizer {
     private $fragment;
     private $default_scheme_ports = array( 'http:' => 80, 'https:' => 443, );
     private $components = array( 'scheme', 'host', 'port', 'user', 'pass', 'path', 'query', 'fragment', );
+    private $mode;
 
-    public function __construct( $url=null ) {
+    public function __construct( $url=null, $mode='normal' ) {
         if ( $url ) {
         	$this->setUrl( $url );
+        }
+        $this->setMode($mode);
+    }
+
+    /*
+     * Google Safebrowsing
+     * Canonicalization section in https://developers.google.com/safe-browsing/developers_guide_v2
+     */
+    public function setMode($mode='normal') {
+        if($mode == 'normal' || $mode == 'safebrowsing') {
+            $this->mode = $mode;
         }
     }
 
@@ -81,6 +93,9 @@ class Normalizer {
             // Update properties
             foreach ( $url_components as $key => $value ) {
                 if ( property_exists( $this, $key ) ) {
+                    if($key == 'scheme' || $key == 'port') {
+                        $value = trim($value);
+                    }
                     $this->$key = $value;
                 }
             }
@@ -93,8 +108,22 @@ class Normalizer {
 
             foreach ( $missing_components as $key ) {
                 if ( property_exists( $this, $key ) ) {
-                    $this->$key = '';
+                    if($key == 'scheme' && $this->mode == 'safebrowsing') {
+                        $this->$key = 'http';
+                    } else {
+                        $this->$key = '';
+                    }
                 }
+            }
+
+            // remove empty path
+            if(empty(trim(str_replace('/', '', $this->path)))) {
+                $this->path = '';
+            }
+
+            if($this->mode == 'safebrowsing' && empty($this->host) && !empty($this->path)) {
+                $this->host = $this->path;
+                $this->path = '';
             }
 
             return true;
@@ -137,6 +166,14 @@ class Normalizer {
             // Host
             // @link http://www.apps.ietf.org/rfc/rfc3986.html#sec-3.2.2
 
+            // fix extra slash or dot on the host
+            $this->host = $this->removeAdditionalHostChars( $this->host );
+
+            // fix decimal host
+            if(is_numeric($this->host)) {
+                $this->host = $this->convertDecimalToIPv4($this->host);
+            }
+
             // Converting the host to lower case
             if ( mb_detect_encoding( $this->host ) == 'UTF-8' ) {
                 $authority .= mb_strtolower( $this->host, 'UTF-8' );
@@ -176,7 +213,6 @@ class Normalizer {
 
         // Query
         // @link http://www.apps.ietf.org/rfc/rfc3986.html#sec-3.4
-
         if ( $this->query ) {
             $query = $this->parseStr( $this->query );
 
@@ -203,7 +239,7 @@ class Normalizer {
             }
 
             // Fix http_build_query adding equals sign to empty keys
-            $this->query = str_replace( '=&', '&', rtrim( $this->query, '=' ));
+            $this->query = str_replace(array('%2F', '%3B', '%3F'), array('/', ';', '?'), str_replace( '=&', '&', rtrim( $this->query, '=' )));
         }
 
         // Fragment
@@ -215,7 +251,11 @@ class Normalizer {
             $this->fragment = '#' . $this->fragment;
         }
 
-        $this->setUrl( $this->scheme . $authority . $this->path . $this->query . $this->fragment );
+        if($this->mode == 'safebrowsing') {
+            $this->setUrl( $this->scheme . $authority . $this->path . $this->query );
+        } else {
+            $this->setUrl( $this->scheme . $authority . $this->path . $this->query . $this->fragment );
+        }
 
         return $this->getUrl();
     }
@@ -276,6 +316,7 @@ class Normalizer {
      * @link http://www.apps.ietf.org/rfc/rfc3986.html#sec-2.3
      */
     public function urlDecodeUnreservedChars( $string ) {
+        $string = str_replace( array( "\t", "\n", "\r" ), array ( '', '', '' ), $string);
         $string = rawurldecode( $string );
         $string = rawurlencode( $string );
         $string = str_replace( array( '%2F', '%3A', '%40' ), array( '/', ':', '@' ), $string );
@@ -289,8 +330,12 @@ class Normalizer {
      * @link http://www.apps.ietf.org/rfc/rfc3986.html#sec-2.2
      */
     public function urlDecodeReservedSubDelimChars( $string ) {
-        return str_replace( array( '%21', '%24', '%26', '%27', '%28', '%29', '%2A', '%2B', '%2C', '%3B', '%3D' ), 
-                            array( '!', '$', '&', "'", '(', ')', '*', '+', ',', ';', '=' ), $string );
+        $c = -1;
+        while($c != 0) {
+            $string = str_replace( array( '%21', '%24', '%25', '%26', '%27', '%28', '%29', '%2A', '%2B', '%2C', '%3B', '%3D' ), 
+                            array( '!', '$', '%', '&', "'", '(', ')', '*', '+', ',', ';', '=' ), $string, $c );
+        }
+        return $this->mode == 'safebrowsing' ? str_replace("%", "%25", $string) : $string;
     }
 
     /**
@@ -355,4 +400,27 @@ class Normalizer {
     private function removeAdditionalPathPrefixSlashes($path) {
         return preg_replace( '/(\/)+/', '/', $path );
     }
+
+    /*
+     * Remove any remainging slash or dot from the end of host
+     */
+    private function removeAdditionalHostChars($host) {
+        $host = rawurldecode($host);
+        return str_replace(array('#', ' '), array('%23', '%20'), preg_replace( '/([\/.])+$/', '', $host ));
+    }
+
+    function convertDecimalToIPv4($host) {
+        if(!is_numeric($host)) {
+            return $host;
+        }
+        $oct1 = intval($host / 16777216);
+        $rem1 = $host % 16777216;
+        $oct2 = intval($rem1 / 65536);
+        $rem2 = $rem1 % 65536;
+        $oct3 = intval($rem2 / 256);
+        $rem3 = $rem2 % 256;
+        $oct4 = intval($rem3);
+        return "{$oct1}.{$oct2}.{$oct3}.{$oct4}";
+    }
+
 }
