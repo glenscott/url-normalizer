@@ -174,6 +174,8 @@ class Normalizer {
                 $this->host = $this->convertDecimalToIPv4($this->host);
             }
 
+            $this->host = $this->fixNonAsciiHost($this->host);
+
             // Converting the host to lower case
             if ( mb_detect_encoding( $this->host ) == 'UTF-8' ) {
                 $authority .= mb_strtolower( $this->host, 'UTF-8' );
@@ -409,7 +411,7 @@ class Normalizer {
         return str_replace(array('#', ' '), array('%23', '%20'), preg_replace( '/([\/.])+$/', '', $host ));
     }
 
-    function convertDecimalToIPv4($host) {
+    private function convertDecimalToIPv4($host) {
         if(!is_numeric($host)) {
             return $host;
         }
@@ -421,6 +423,23 @@ class Normalizer {
         $rem3 = $rem2 % 256;
         $oct4 = intval($rem3);
         return "{$oct1}.{$oct2}.{$oct3}.{$oct4}";
+    }
+
+    private function fixNonAsciiHost($host) {
+        $tmp = $host;
+        if(!mb_check_encoding($host, 'ASCII')) {
+            $tmp = "";
+            $len = mb_strlen($host);
+            for($i=0; $i<$len; $i++) {
+                $c = ord(mb_substr($host, $i, 1));
+                if($c <= 32 || $c >= 127) {
+                    $tmp .= sprintf("%%%02X", $c);
+                } else {
+                    $tmp .= chr($c);
+                }
+            }
+        }
+        return $tmp;
     }
 
 }
