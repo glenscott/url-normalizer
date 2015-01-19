@@ -1,10 +1,14 @@
 <?php
 
-echo '<pre>';
+if(php_sapi_name() !== 'cli') {
+	echo '<pre>';
+}
 
 require_once 'src/URL/Normalizer.php';
 
 $un = new URL\Normalizer();
+
+$c=0; $t=0;
 
 test('eXAMPLE://a/./b/../b/%63/%7bfoo%7d', 'example://a/b/c/%7Bfoo%7D');
 test('http://www.example.com', 'http://www.example.com/');
@@ -64,6 +68,8 @@ test('http://example.com/path/?query=space value', 'http://example.com/path/?que
 
 test('http://www.example.com/?array[key]=value', 'http://www.example.com/?array%5Bkey%5D=value');
 
+echo "Did {$c}/{$t}\n";
+
 /**
  * Test URL Normalization
  *
@@ -73,12 +79,14 @@ test('http://www.example.com/?array[key]=value', 'http://www.example.com/?array%
  * @author emojka
  **/
 function test($input, $expected) {
-    global $un;
+    global $un, $c, $t;
     $un->setUrl($input);
     $result = $un->normalize();
+    $t++;
     if ($result === $expected) {
         printf("✔ %s → %s\n", $input, $result);
+        $c++;
     } else {
-        printf("%s ✘ %s → %s\n", $expected, $input, $result);
+        printf("✘ %s → %s <> %s\n", $input, $result, $expected);
     }
 }
