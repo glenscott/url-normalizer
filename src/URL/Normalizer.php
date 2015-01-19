@@ -174,8 +174,10 @@ class Normalizer {
                 $this->host = $this->convertDecimalToIPv4($this->host);
             }
 
-            $this->host = $this->fixNonAsciiHost($this->host);
-
+            if($this->mode == 'safebrowsing') {
+                $this->host = $this->fixNonAsciiHost($this->host);
+            }
+            
             // Converting the host to lower case
             if ( mb_detect_encoding( $this->host ) == 'UTF-8' ) {
                 $authority .= mb_strtolower( $this->host, 'UTF-8' );
