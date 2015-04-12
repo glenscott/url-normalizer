@@ -293,4 +293,10 @@ class NormalizerTest extends \PHPUnit_Framework_TestCase
             array('http://www.example.com/?foo[]=bar&foo[]=baz', 'http://www.example.com/?foo%5B%5D=bar&foo%5B%5D=baz'),
             );
     }
+
+    public function testDelimitersArePreservedIfAssociatedComponentIsEmpty()
+    {
+        $this->fixture->setUrl('http://www.example.com/?');
+        $this->assertEquals( 'http://www.example.com/?', $this->fixture->normalize() );
+    }
 }

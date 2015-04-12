@@ -34,6 +34,11 @@ class Normalizer {
     private $fragment;
     private $default_scheme_ports = array( 'http:' => 80, 'https:' => 443, );
     private $components = array( 'scheme', 'host', 'port', 'user', 'pass', 'path', 'query', 'fragment', );
+    
+    /**
+     * Does the original URL have a ? query delimiter
+     */
+    private $query_delimiter;
 
     public function __construct( $url=null ) {
         if ( $url ) {
@@ -60,6 +65,13 @@ class Normalizer {
 
     public function setUrl( $url ) {
         $this->url = $url;
+
+        if (strpos($this->url, '?') !== false) {
+            $this->query_delimiter = true;
+        }
+        else {
+            $this->query_delimiter = false;
+        }
 
         // parse URL into respective parts
         $url_components = $this->mb_parse_url( $this->url );
@@ -204,6 +216,11 @@ class Normalizer {
 
             // Fix http_build_query adding equals sign to empty keys
             $this->query = str_replace( '=&', '&', rtrim( $this->query, '=' ));
+        }
+        else {
+            if ($this->query_delimiter) {
+                $this->query = '?';
+            }
         }
 
         // Fragment
