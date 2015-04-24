@@ -299,4 +299,10 @@ class NormalizerTest extends \PHPUnit_Framework_TestCase
         $this->fixture->setUrl('http://www.example.com/?');
         $this->assertEquals( 'http://www.example.com/?', $this->fixture->normalize() );
     }
+
+    public function testEmptyDelimitersAreRemovedOption()
+    {
+        $this->fixture = new Normalizer('http://www.example.com/?', true);
+        $this->assertEquals( 'http://www.example.com/', $this->fixture->normalize() );
+    }
 }

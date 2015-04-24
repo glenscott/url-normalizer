@@ -34,16 +34,19 @@ class Normalizer {
     private $fragment;
     private $default_scheme_ports = array( 'http:' => 80, 'https:' => 443, );
     private $components = array( 'scheme', 'host', 'port', 'user', 'pass', 'path', 'query', 'fragment', );
-    
+    private $remove_empty_delimiters;
+
     /**
      * Does the original URL have a ? query delimiter
      */
     private $query_delimiter;
 
-    public function __construct( $url=null ) {
+    public function __construct( $url=null, $remove_empty_delimiters = false ) {
         if ( $url ) {
         	$this->setUrl( $url );
         }
+
+        $this->remove_empty_delimiters = $remove_empty_delimiters;
     }
 
     private function getQuery($query) {
@@ -218,7 +221,7 @@ class Normalizer {
             $this->query = str_replace( '=&', '&', rtrim( $this->query, '=' ));
         }
         else {
-            if ($this->query_delimiter) {
+            if ($this->query_delimiter && ! $this->remove_empty_delimiters) {
                 $this->query = '?';
             }
         }
