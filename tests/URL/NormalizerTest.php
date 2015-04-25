@@ -311,4 +311,10 @@ class NormalizerTest extends \PHPUnit_Framework_TestCase
         $this->fixture->setUrl('http://www.example.com/?a&');
         $this->assertEquals( 'http://www.example.com/?a', $this->fixture->normalize() );
     }
+
+    public function testAlphabeticalSortingOfQueryParameters()
+    {
+        $this->fixture = new Normalizer('http://www.example.com/?c=3&b=2&a=1', false, true);
+        $this->assertEquals( 'http://www.example.com/?a=1&b=2&c=3', $this->fixture->normalize() );
+    }
 }

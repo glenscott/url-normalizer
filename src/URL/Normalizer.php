@@ -35,18 +35,20 @@ class Normalizer {
     private $default_scheme_ports = array( 'http:' => 80, 'https:' => 443, );
     private $components = array( 'scheme', 'host', 'port', 'user', 'pass', 'path', 'query', 'fragment', );
     private $remove_empty_delimiters;
+    private $sort_query_params;
 
     /**
      * Does the original URL have a ? query delimiter
      */
     private $query_delimiter;
 
-    public function __construct( $url=null, $remove_empty_delimiters = false ) {
+    public function __construct( $url=null, $remove_empty_delimiters = false, $sort_query_params = false ) {
         if ( $url ) {
         	$this->setUrl( $url );
         }
 
         $this->remove_empty_delimiters = $remove_empty_delimiters;
+        $this->sort_query_params       = $sort_query_params;
     }
 
     private function getQuery($query) {
@@ -199,6 +201,11 @@ class Normalizer {
             $qs = $this->getQuery($query);
 
             $this->query = '?';
+
+            if ($this->sort_query_params) {
+                ksort($qs);
+            }
+
             foreach ($qs as $key => $val) {
                 if (strlen($this->query) > 1) {
                     $this->query .= '&';
@@ -328,7 +335,7 @@ class Normalizer {
             if ( ! $pair ) {
                 continue;
             }
-            
+
             $var = explode( '=', $pair, 2 );
             $val = ( isset( $var[1] ) ? $var[1] : '' );
 
