@@ -305,4 +305,10 @@ class NormalizerTest extends \PHPUnit_Framework_TestCase
         $this->fixture = new Normalizer('http://www.example.com/?', true);
         $this->assertEquals( 'http://www.example.com/', $this->fixture->normalize() );
     }
+
+    public function testEmptyParametersAreNotPreserved()
+    {
+        $this->fixture->setUrl('http://www.example.com/?a&');
+        $this->assertEquals( 'http://www.example.com/?a', $this->fixture->normalize() );
+    }
 }

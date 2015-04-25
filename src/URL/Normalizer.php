@@ -325,6 +325,10 @@ class Normalizer {
         $pairs = explode( '&', $string );
 
         foreach ( $pairs as $pair ) {
+            if ( ! $pair ) {
+                continue;
+            }
+            
             $var = explode( '=', $pair, 2 );
             $val = ( isset( $var[1] ) ? $var[1] : '' );
 
