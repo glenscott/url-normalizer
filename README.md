@@ -39,6 +39,13 @@ http://en.wikipedia.org/wiki/URL_normalization#Normalizations_that_Preserve_Sema
 
 For license information, please see LICENSE file.
 
+## Options
+
+Two options are available when normalizing URLs which are disabled by default:
+
+1. Remove empty delimiters.  Enabling this option would normalize http://www.example.com/? to http://www.example.com/
+2. Sort query parameters.  Enabling this option sorts the query parameters by key alphabetically.  For example, http://www.example.com/?c=3&b=2&a=1 becomes http://www.example.com/?a=1&b=2&c=3
+
 ## TODO
 
 Add further scheme-based normalization steps, as detailed in section 6.2.3 of the RFC.
