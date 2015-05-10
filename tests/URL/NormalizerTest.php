@@ -88,7 +88,7 @@ class NormalizerTest extends \PHPUnit_Framework_TestCase
     /**
      * @dataProvider dotSegmentProvider
      *
-     * http://www.apps.ietf.org/rfc/rfc3986.html#sec-5.2.4
+     * https://tools.ietf.org/html/rfc3986#section-5.2.4
      */
     public function testRemoveDotSegments( $path, $normalised_path ) {
         $this->assertEquals( $normalised_path, $this->fixture->removeDotSegments( $path ) );
@@ -126,7 +126,7 @@ class NormalizerTest extends \PHPUnit_Framework_TestCase
 	/**
 	 * @dataProvider schemeData
 	 *
-	 * http://www.apps.ietf.org/rfc/rfc3986.html#sec-6.2.3
+	 * https://tools.ietf.org/html/rfc3986#section-6.2.3
 	 */
 	public function testSchemeBasedNormalization( $url ) {
 		$expected_uri = 'http://example.com/';
@@ -146,7 +146,7 @@ class NormalizerTest extends \PHPUnit_Framework_TestCase
 	/**
 	 * @dataProvider schemeDataSSL
 	 *
-	 * http://www.apps.ietf.org/rfc/rfc3986.html#sec-6.2.3
+	 * https://tools.ietf.org/html/rfc3986#section-6.2.3
 	 */
 	public function testSchemeBasedNormalizationSSL( $url ) {
 		$expected_uri = 'https://example.com/';

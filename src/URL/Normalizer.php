@@ -6,7 +6,7 @@ namespace URL;
  * Syntax based normalization of URI's
  *
  * This normalises URI's based on the specification RFC 3986
- * http://www.apps.ietf.org/rfc/rfc3986.html
+ * https://tools.ietf.org/html/rfc3986
  *
  * Example usage:
  * <code>
@@ -125,10 +125,10 @@ class Normalizer
 
         // URI Syntax Components
         // scheme authority path query fragment
-        // @link http://www.apps.ietf.org/rfc/rfc3986.html#sec-3
+        // @link https://tools.ietf.org/html/rfc3986#section-3
 
         // Scheme
-        // @link http://www.apps.ietf.org/rfc/rfc3986.html#sec-3.1
+        // @link https://tools.ietf.org/html/rfc3986#section-3.1
 
         if ($this->scheme) {
             // Converting the scheme to lower case
@@ -136,14 +136,14 @@ class Normalizer
         }
 
         // Authority
-        // @link http://www.apps.ietf.org/rfc/rfc3986.html#sec-3.2
+        // @link https://tools.ietf.org/html/rfc3986#section-3.2
 
         $authority = '';
         if ($this->host) {
             $authority .= '//';
 
             // User Information
-            // @link http://www.apps.ietf.org/rfc/rfc3986.html#sec-3.2.1
+            // @link https://tools.ietf.org/html/rfc3986#section-3.2.1
 
             if ($this->user) {
                 if ($this->pass) {
@@ -154,7 +154,7 @@ class Normalizer
             }
 
             // Host
-            // @link http://www.apps.ietf.org/rfc/rfc3986.html#sec-3.2.2
+            // @link https://tools.ietf.org/html/rfc3986#section-3.2.2
 
             // Converting the host to lower case
             if (mb_detect_encoding($this->host) == 'UTF-8') {
@@ -164,7 +164,7 @@ class Normalizer
             }
 
             // Port
-            // @link http://www.apps.ietf.org/rfc/rfc3986.html#sec-3.2.3
+            // @link https://tools.ietf.org/html/rfc3986#section-3.2.3
 
             // Removing the default port
             if (isset($this->default_scheme_ports[$this->scheme] )
@@ -178,7 +178,7 @@ class Normalizer
         }
 
         // Path
-        // @link http://www.apps.ietf.org/rfc/rfc3986.html#sec-3.3
+        // @link https://tools.ietf.org/html/rfc3986#section-3.3
 
         if ($this->path) {
             $this->path = $this->removeAdditionalPathPrefixSlashes($this->path);
@@ -192,7 +192,7 @@ class Normalizer
         }
 
         // Query
-        // @link http://www.apps.ietf.org/rfc/rfc3986.html#sec-3.4
+        // @link https://tools.ietf.org/html/rfc3986#section-3.4
 
         if ($this->query) {
             $query = $this->parseStr($this->query);
@@ -232,7 +232,7 @@ class Normalizer
         }
 
         // Fragment
-        // @link http://www.apps.ietf.org/rfc/rfc3986.html#sec-3.5
+        // @link https://tools.ietf.org/html/rfc3986#section-3.5
 
         if ($this->fragment) {
             $this->fragment = rawurldecode($this->fragment);
@@ -247,7 +247,7 @@ class Normalizer
 
     /**
      * Path segment normalization
-     * http://www.apps.ietf.org/rfc/rfc3986.html#sec-5.2.4
+     * https://tools.ietf.org/html/rfc3986#section-5.2.4
      */
     public function removeDotSegments($path)
     {
@@ -296,7 +296,7 @@ class Normalizer
     /**
      * Decode unreserved characters
      *
-     * @link http://www.apps.ietf.org/rfc/rfc3986.html#sec-2.3
+     * @link https://tools.ietf.org/html/rfc3986#section-2.3
      */
     public function urlDecodeUnreservedChars($string)
     {
@@ -310,7 +310,7 @@ class Normalizer
     /**
      * Decode reserved sub-delims
      *
-     * @link http://www.apps.ietf.org/rfc/rfc3986.html#sec-2.2
+     * @link https://tools.ietf.org/html/rfc3986#section-2.2
      */
     public function urlDecodeReservedSubDelimChars($string)
     {

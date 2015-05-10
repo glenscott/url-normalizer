@@ -2,7 +2,7 @@
 # Syntax based normalization of URI's
 
 This normalizes URI's based on the specification RFC 3986 
-http://www.apps.ietf.org/rfc/rfc3986.html
+https://tools.ietf.org/html/rfc3986
 
 Example usage:
 
