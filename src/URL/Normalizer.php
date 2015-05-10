@@ -79,7 +79,7 @@ class Normalizer {
         }
 
         // parse URL into respective parts
-        $url_components = $this->mb_parse_url( $this->url );
+        $url_components = $this->mbParseUrl( $this->url );
 
         if ( ! $url_components ) {
             // Reset URL
@@ -355,7 +355,7 @@ class Normalizer {
         return $params;
     }
 
-    private function mb_parse_url($url) {
+    private function mbParseUrl($url) {
         $result = false;
 
         // Build arrays of values we need to decode before parsing
