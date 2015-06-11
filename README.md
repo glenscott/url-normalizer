@@ -43,7 +43,7 @@ For license information, please see LICENSE file.
 
 Two options are available when normalizing URLs which are disabled by default:
 
-1. Remove empty delimiters.  Enabling this option would normalize http://www.example.com/? to http://www.example.com/
+1. Remove empty delimiters.  Enabling this option would normalize http://www.example.com/? to http://www.example.com/  Currently, only the query string delimiter (?) is supported by this option.
 2. Sort query parameters.  Enabling this option sorts the query parameters by key alphabetically.  For example, http://www.example.com/?c=3&b=2&a=1 becomes http://www.example.com/?a=1&b=2&c=3
 
 ## TODO
