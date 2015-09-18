@@ -10,11 +10,10 @@ namespace URL;
  *
  * Example usage:
  * <code>
- * require_once 'Normalizer.php';
+ * require_once 'vendor/autoload.php';
  *
  * $url = 'eXAMPLE://a/./b/../b/%63/%7bfoo%7d';
- * $un = new URLNormalizer();
- * $un->setUrl( $url );
+ * $un = new URL\Normalizer( $url );
  * echo $un->normalize();
  *
  * // result: "example://a/b/c/%7Bfoo%7D"
