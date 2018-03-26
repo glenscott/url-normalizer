@@ -4,7 +4,7 @@ require_once dirname( __FILE__ ) . '/../../src/URL/Normalizer.php';
 
 use URL\Normalizer;
 
-class NormalizerTest extends \PHPUnit_Framework_TestCase
+class NormalizerTest extends \PHPUnit\Framework\TestCase
 {
     protected $fixture;
     private $test_url = 'http://www.yahoo.com/';
