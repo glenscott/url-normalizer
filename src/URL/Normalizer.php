@@ -233,7 +233,7 @@ class Normalizer
         // Fragment
         // @link https://tools.ietf.org/html/rfc3986#section-3.5
 
-        if ($this->fragment) {
+        if ($this->fragment !== '') {
             $this->fragment = rawurldecode($this->fragment);
             $this->fragment = rawurlencode($this->fragment);
             $this->fragment = '#' . $this->fragment;
