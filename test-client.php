@@ -42,11 +42,13 @@ test('http://example.com', 'http://example.com/');
 test('http://example.com/', 'http://example.com/');
 test('http://example.com:/', 'http://example.com/');
 test('http://example.com:80/', 'http://example.com/');
+test('http://example.com:443/', 'http://example.com:443/');
 
 test('https://example.com', 'https://example.com/');
 test('https://example.com/', 'https://example.com/');
 test('https://example.com:/', 'https://example.com/');
 test('https://example.com:443/', 'https://example.com/');
+test('https://example.com:80/', 'https://example.com:80/');
 
 test('http://fancysite.nl/links/doit.pl?id=2029', 'http://fancysite.nl/links/doit.pl?id=2029');
 test('http://example.com/index.html#fragment', 'http://example.com/index.html#fragment');
