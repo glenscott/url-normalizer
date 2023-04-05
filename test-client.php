@@ -42,6 +42,7 @@ test('http://example.com', 'http://example.com/');
 test('http://example.com/', 'http://example.com/');
 test('http://example.com:/', 'http://example.com/');
 test('http://example.com:80/', 'http://example.com/');
+test('http://example.com:443/', 'http://example.com:443/');
 
 test('https://example.com', 'https://example.com/');
 test('https://example.com/', 'https://example.com/');
