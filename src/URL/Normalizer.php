@@ -166,8 +166,10 @@ class Normalizer
             // @link https://tools.ietf.org/html/rfc3986#section-3.2.3
 
             // Removing the default port
-            if (isset($this->default_scheme_ports[$this->scheme] )
-                    && $this->port == $this->default_scheme_ports[$this->scheme]) {
+            if (
+                isset($this->default_scheme_ports[$this->scheme])
+                    && $this->port == $this->default_scheme_ports[$this->scheme]
+            ) {
                 $this->port = '';
             }
 
