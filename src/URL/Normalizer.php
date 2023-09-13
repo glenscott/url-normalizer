@@ -331,7 +331,7 @@ class Normalizer
     private function parseStr($string)
     {
         $params = array();
-                
+
         $pairs = explode('&', $string);
 
         foreach ($pairs as $pair) {
