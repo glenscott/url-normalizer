@@ -9,7 +9,7 @@ class NormalizerTest extends \PHPUnit\Framework\TestCase
     protected $fixture;
     private $test_url = 'http://www.yahoo.com/';
     
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->fixture = new Normalizer();
     }
