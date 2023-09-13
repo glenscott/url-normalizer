@@ -340,7 +340,7 @@ class Normalizer
             }
 
             $var = explode('=', $pair, 2);
-            $val = ( isset( $var[1] ) ? $var[1] : '' );
+            $val = (isset($var[1]) ? $var[1] : '');
 
             if (isset($params[$var[0]])) {
                 if (is_array($params[$var[0]])) {
