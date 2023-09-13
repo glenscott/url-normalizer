@@ -166,8 +166,10 @@ class Normalizer
             // @link https://tools.ietf.org/html/rfc3986#section-3.2.3
 
             // Removing the default port
-            if (isset($this->default_scheme_ports[$this->scheme] )
-                    && $this->port == $this->default_scheme_ports[$this->scheme]) {
+            if (
+                isset($this->default_scheme_ports[$this->scheme])
+                    && $this->port == $this->default_scheme_ports[$this->scheme]
+            ) {
                 $this->port = '';
             }
 
@@ -329,7 +331,7 @@ class Normalizer
     private function parseStr($string)
     {
         $params = array();
-                
+
         $pairs = explode('&', $string);
 
         foreach ($pairs as $pair) {
@@ -338,7 +340,7 @@ class Normalizer
             }
 
             $var = explode('=', $pair, 2);
-            $val = ( isset( $var[1] ) ? $var[1] : '' );
+            $val = (isset($var[1]) ? $var[1] : '');
 
             if (isset($params[$var[0]])) {
                 if (is_array($params[$var[0]])) {
