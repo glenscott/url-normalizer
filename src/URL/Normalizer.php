@@ -54,15 +54,15 @@ class Normalizer
 
     private function getQuery($query)
     {
-        $qs = array();
-        foreach ($query as $qk => $qv) {
-            if (is_array($qv)) {
-                $qs[rawurldecode($qk)] = $this->getQuery($qv);
+        $queryString = array();
+        foreach ($query as $queryKey => $queryValue) {
+            if (is_array($queryValue)) {
+                $queryString[rawurldecode($queryKey)] = $this->getQuery($queryValue);
             } else {
-                $qs[rawurldecode($qk)] = rawurldecode($qv);
+                $queryString[rawurldecode($queryKey)] = rawurldecode($queryValue);
             }
         }
-        return $qs;
+        return $queryString;
     }
 
     public function getUrl()
