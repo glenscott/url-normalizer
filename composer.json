@@ -20,5 +20,10 @@
         "psr-4": {
             "URL\\" : "src/URL"
         }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Test\\Url\\": "tests/"
+        }
     }
 }
