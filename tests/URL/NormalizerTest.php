@@ -1,6 +1,6 @@
 <?php
 
-require_once dirname( __FILE__ ) . '/../../src/URL/Normalizer.php';
+namespace Test\Url;
 
 use URL\Normalizer;
 
