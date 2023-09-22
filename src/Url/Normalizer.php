@@ -1,6 +1,6 @@
 <?php
 
-namespace URL;
+namespace Url;
 
 /**
  * Syntax based normalization of URI's
