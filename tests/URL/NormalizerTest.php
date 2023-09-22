@@ -8,43 +8,43 @@ class NormalizerTest extends \PHPUnit\Framework\TestCase
 {
     protected $fixture;
     private $test_url = 'http://www.yahoo.com/';
-    
+
     protected function setUp(): void
     {
         $this->fixture = new Normalizer();
     }
-    
+
     public function testClassCanBeInstantiated() {
         $this->assertTrue( is_object( $this->fixture ) );
     }
-    
+
     public function testObjectIsOfCorrectType() {
         $this->assertTrue( get_class( $this->fixture ) == 'URL\Normalizer' );
     }
-    
+
     public function testObjectHasGetUrlMethod() {
         $this->assertTrue( method_exists( $this->fixture, 'getUrl' ) );
     }
-    
+
     public function testSetUrlFromConstructor() {
     	$this->fixture = new Normalizer( 'http://www.example.com/' );
     	$this->assertTrue( $this->fixture->getUrl() == 'http://www.example.com/' );
     }
-    
+
     public function testSetUrl() {
         $this->fixture->setUrl( $this->test_url );
         $this->assertTrue( $this->fixture->getUrl() == $this->test_url );
     }
-    
+
     public function testObjectHasGetSchemeMethod() {
         $this->assertTrue( method_exists( $this->fixture, 'getScheme' ) );
     }
-    
+
     public function testSchemeExtractedFromUrl() {
         $this->fixture->setUrl( $this->test_url );
         $this->assertTrue( $this->fixture->getScheme() == 'http' );
     }
-    
+
     /**
      * @dataProvider provider
      */
@@ -53,20 +53,20 @@ class NormalizerTest extends \PHPUnit\Framework\TestCase
         
         $this->assertEquals( $normalised_url, $this->fixture->normalize() );
     }
-    
+
     /**
      * @dataProvider provider
      */
     public function testUrlsAreNormalisedAgain( $url, $normalised_url ) {
         $this->fixture->setUrl( $url );
-        
+
         // normalize once
         $this->fixture->normalize();
-        
+
         // then normalize again
         $this->assertEquals( $normalised_url, $this->fixture->normalize() );
     }
-    
+
     public function provider() {
         // tests from http://en.wikipedia.org/wiki/URL_normalization#Normalizations_that_Preserve_Semantics
         return array(
@@ -79,7 +79,7 @@ class NormalizerTest extends \PHPUnit\Framework\TestCase
                      array( 'eXAMPLE://a/./b/../b/%63/%7bfoo%7d',          'example://a/b/c/%7Bfoo%7D' ),
         );
     }
-    
+
     public function testCaseIsNormalization() {
         $this->fixture->setUrl( 'http://www.yahoo.com/%a1' );
         $this->assertEquals( 'http://www.yahoo.com/%A1', $this->fixture->normalize() );
@@ -93,7 +93,7 @@ class NormalizerTest extends \PHPUnit\Framework\TestCase
     public function testRemoveDotSegments( $path, $normalised_path ) {
         $this->assertEquals( $normalised_path, $this->fixture->removeDotSegments( $path ) );
     }
-    
+
     public function dotSegmentProvider() {
         return array(
             array( '../',                '' ),
@@ -116,7 +116,7 @@ class NormalizerTest extends \PHPUnit\Framework\TestCase
             array( '..',                 '' ),
         );
     }
-    
+
     public function testDecodingUnreservedUrlChars() {
         $this->assertEquals( 'c', $this->fixture->urlDecodeUnreservedChars( '%63' ) );
         $this->assertEquals( 'c/%7B', $this->fixture->urlDecodeUnreservedChars( '%63/%7b' ) );
@@ -142,7 +142,7 @@ class NormalizerTest extends \PHPUnit\Framework\TestCase
 					  array( 'http://example.com:/' ),
 					  array( 'http://example.com:80/' ), );
 	}
-	
+
 	/**
 	 * @dataProvider schemeDataSSL
 	 *
@@ -153,26 +153,26 @@ class NormalizerTest extends \PHPUnit\Framework\TestCase
 	
 		$this->fixture->setUrl( $url );
 		$this->assertEquals( $expected_uri, $this->fixture->normalize() );
-	
+
 	}
-	
+
 	public function schemeDataSSL() {
 		return array( array( 'https://example.com' ),
 				array( 'https://example.com/' ),
 				array( 'https://example.com:/' ),
 				array( 'https://example.com:443/' ), );
 	}
-	
+
 	public function testQueryParametersArePreserved() {
 	    $url = 'http://fancysite.nl/links/doit.pl?id=2029';
 	    
 	    $this->fixture->setUrl( $url );
 	    $this->assertEquals( $url, $this->fixture->normalize() );
 	}
-	
+
 	public function testFragmentIdentifiersArePreserved() {
 	    $url = 'http://example.com/index.html#fragment';
-	    
+
 	    $this->fixture->setUrl( $url );
 	    $this->assertEquals( $url, $this->fixture->normalize() );
 	}
@@ -183,7 +183,7 @@ class NormalizerTest extends \PHPUnit\Framework\TestCase
         $this->fixture->setUrl( $url );
         $this->assertEquals( $url, $this->fixture->normalize() );
     }
-    
+
     public function testCaseSensitiveElementsArePreserved() {
         $url = 'HtTp://User:Pass@www.ExAmPle.com:80/Blah';
 
