@@ -2,7 +2,7 @@
 
 echo '<pre>';
 
-require_once 'src/URL/Normalizer.php';
+require_once 'src/Url/Normalizer.php';
 
 $un = new URL\Normalizer();
 
