@@ -2,7 +2,7 @@
 
 namespace Test\Url;
 
-use URL\Normalizer;
+use Url\Normalizer;
 
 class NormalizerTest extends \PHPUnit\Framework\TestCase
 {
