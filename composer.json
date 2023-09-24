@@ -1,15 +1,15 @@
 {
-    "name": "glenscott/url-normalizer",
+    "name": "johnroyer/url-normalizer",
     "description": "Syntax based normalization of URL's",
     "license": "MIT",
     "authors": [
         {
-            "name": "Glen Scott",
-            "email": "glen@glenscott.co.uk"
+            "name": "Zero Huang",
+            "email": "john.royer@gmail.com"
         }
     ],
     "require": {
-        "php": ">=7.4",
+        "php": ">=8.0",
         "ext-mbstring": "*"
     },
     "require-dev": {
@@ -18,7 +18,7 @@
     },
     "autoload": {
         "psr-4": {
-            "Url\\" : "src/Url"
+            "Zeroplex\\": "src/"
         }
     },
     "autoload-dev": {

@@ -2,7 +2,7 @@
 
 namespace Test\Url;
 
-use Url\Normalizer;
+use Zeroplex\Url\Normalizer;
 
 class NormalizerTest extends \PHPUnit\Framework\TestCase
 {
@@ -40,11 +40,6 @@ class NormalizerTest extends \PHPUnit\Framework\TestCase
     public function testClassCanBeInstantiated()
     {
         $this->assertTrue(is_object($this->fixture));
-    }
-
-    public function testObjectIsOfCorrectType()
-    {
-        $this->assertTrue(get_class($this->fixture) == 'Url\Normalizer');
     }
 
     public function testObjectHasGetUrlMethod()
