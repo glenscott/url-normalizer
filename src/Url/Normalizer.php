@@ -37,7 +37,14 @@ class Normalizer
     private $remove_empty_delimiters;
     private $sort_query_params;
     private $removeTrackingParameter;
-    private $trackingString;
+    private $trackingString = array(
+        'utm_campaign' => null,
+        'utm_medium' => null,
+        'utm_source' => null,
+        'fbclid' => null,
+        'at_medium' => null,
+        'at_campaign' => null
+    );
 
     /**
      * Does the original URL have a ? query delimiter
@@ -53,15 +60,6 @@ class Normalizer
         $this->remove_empty_delimiters = $remove_empty_delimiters;
         $this->sort_query_params       = $sort_query_params;
         $this->removeTrackingParameter = boolval($removeTrackingParameter);
-
-        $this->trackingString = array(
-            'utm_campaign' => null,
-            'utm_medium' => null,
-            'utm_source' => null,
-            'fbclid' => null,
-            'at_medium' => null,
-            'at_campaign' => null
-        );
     }
 
     private function getQuery($query)
