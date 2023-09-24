@@ -36,13 +36,22 @@ class Normalizer
     private $components = array('scheme', 'host', 'port', 'user', 'pass', 'path', 'query', 'fragment');
     private $remove_empty_delimiters;
     private $sort_query_params;
+    private $removeTrackingParameter;
+    private $trackingString = array(
+        'utm_campaign' => null,
+        'utm_medium' => null,
+        'utm_source' => null,
+        'fbclid' => null,
+        'at_medium' => null,
+        'at_campaign' => null
+    );
 
     /**
      * Does the original URL have a ? query delimiter
      */
     private $query_delimiter;
 
-    public function __construct($url = null, $remove_empty_delimiters = false, $sort_query_params = false)
+    public function __construct($url = null, $remove_empty_delimiters = false, $sort_query_params = false, $removeTrackingParameter = false)
     {
         if ($url) {
             $this->setUrl($url);
@@ -50,12 +59,18 @@ class Normalizer
 
         $this->remove_empty_delimiters = $remove_empty_delimiters;
         $this->sort_query_params       = $sort_query_params;
+        $this->removeTrackingParameter = boolval($removeTrackingParameter);
     }
 
     private function getQuery($query)
     {
         $queryString = array();
         foreach ($query as $queryKey => $queryValue) {
+            if ($this->removeTrackingParameter) {
+                if (array_key_exists($queryKey, $this->trackingString)) {
+                    continue;
+                }
+            }
             if (is_array($queryValue)) {
                 $queryString[rawurldecode($queryKey)] = $this->getQuery($queryValue);
             } else {

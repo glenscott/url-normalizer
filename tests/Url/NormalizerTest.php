@@ -373,4 +373,35 @@ class NormalizerTest extends \PHPUnit\Framework\TestCase
         $this->fixture = new Normalizer('http://www.example.com/?c=3&b=2&a=1', false, true);
         $this->assertEquals('http://www.example.com/?a=1&b=2&c=3', $this->fixture->normalize());
     }
+
+    public function trackingParameterProvidor()
+    {
+        return array(
+            array('https://www.example.com/', 'https://www.example.com/'),
+            array('https://www.example.com/?foo=bar', 'https://www.example.com/?foo=bar'),
+            array('https://www.example.com/path/to/?foo=bar', 'https://www.example.com/path/to/?foo=bar'),
+
+            array('https://www.example.com/?', 'https://www.example.com/?'),
+            array('https://www.example.com/?', 'https://www.example.com/?fbclid=123abc'),
+            array('https://www.example.com/?foo=bar', 'https://www.example.com/?foo=bar&fbclid=123abc'),
+            array('https://www.example.com/?foo=bar', 'https://www.example.com/?fbclid=123abc&foo=bar'),
+            array('https://www.example.com/?foo=bar', 'https://www.example.com/?foo=bar&utm_campaign=123&utm_source=rss&utm_medium=test'),
+            array('https://www.example.com/?foo=bar', 'https://www.example.com/?utm_campaign=123&utm_source=rss&foo=bar&utm_medium=test'),
+            array('https://www.example.com/?foo=bar', 'https://www.example.com/?fbclid=123abc&foo=bar&at_medium=test'),
+            array('https://www.example.com/?foo=bar', 'https://www.example.com/?fbclid=123abc&foo=bar&at_campaign=test'),
+        );
+    }
+
+    /**
+     * @dataProvider trackingParameterProvidor
+     */
+    public function testTrackingParameterRemoving($expected, $input)
+    {
+        $this->fixture = new Normalizer($input, false, false, true);
+
+        $this->assertEquals(
+            $expected,
+            $this->fixture->normalize()
+        );
+    }
 }

@@ -1,3 +1,9 @@
+# Introduction
+
+This URL normalizer is fork from [glenscott/url-normalizer](https://github.com/glenscott/url-normalizer) with some changes:
+- upgrade PHPUnit to v9.x
+- remove tracking parameter as an option (`utm_source`, `fbclid`, etc)
+
 
 # Syntax based normalization of URI's
 
@@ -49,7 +55,4 @@ Two options are available when normalizing URLs which are disabled by default:
 
 1. Remove empty delimiters.  Enabling this option would normalize `http://www.example.com/?` to `http://www.example.com/`  Currently, only the query string delimiter (`?`) is supported by this option.
 2. Sort query parameters.  Enabling this option sorts the query parameters by key alphabetically.  For example, `http://www.example.com/?c=3&b=2&a=1` becomes `http://www.example.com/?a=1&b=2&c=3`
-
-### TODO
-
-Add further scheme-based normalization steps, as detailed in section 6.2.3 of the RFC.
+3. Remove tracking parameters. For examplem `https://example.com/?fbclid=xxxxx` becomes `https://example.com/?`
