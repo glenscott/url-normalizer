@@ -1,6 +1,6 @@
 <?php
 
-namespace Url;
+namespace Zeroplex\Url;
 
 /**
  * Syntax based normalization of URI's
