@@ -36,13 +36,14 @@ class Normalizer
     private $components = array('scheme', 'host', 'port', 'user', 'pass', 'path', 'query', 'fragment');
     private $remove_empty_delimiters;
     private $sort_query_params;
+    private $removeTrackingParameter;
 
     /**
      * Does the original URL have a ? query delimiter
      */
     private $query_delimiter;
 
-    public function __construct($url = null, $remove_empty_delimiters = false, $sort_query_params = false)
+    public function __construct($url = null, $remove_empty_delimiters = false, $sort_query_params = false, $removeTrackingParameter = false)
     {
         if ($url) {
             $this->setUrl($url);
@@ -50,6 +51,7 @@ class Normalizer
 
         $this->remove_empty_delimiters = $remove_empty_delimiters;
         $this->sort_query_params       = $sort_query_params;
+        $this->removeTrackingParameter = $removeTrackingParameter;
     }
 
     private function getQuery($query)
