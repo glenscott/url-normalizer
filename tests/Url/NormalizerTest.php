@@ -14,6 +14,29 @@ class NormalizerTest extends \PHPUnit\Framework\TestCase
         $this->fixture = new Normalizer();
     }
 
+    public function pathWithPrefixSlashprovider()
+    {
+        return [
+            ['/path', '/path'],
+            ['/path', '//path'],
+            ['/path', '/////path'],
+            ['/', '/'],
+            ['/', '///'],
+        ];
+    }
+
+    /**
+     * @dataProvider pathWithPrefixSlashprovider
+     */
+    public function testAdditionalPrefixSlashRemoving($expected, $path)
+    {
+        $refMethod = new \ReflectionMethod($this->fixture, 'removeAdditionalPathPrefixSlashes');
+        $refMethod->setAccessible(true);
+        $output = $refMethod->invoke($this->fixture, $path);
+
+        $this->assertEquals($expected, $output);
+    }
+
     public function testClassCanBeInstantiated()
     {
         $this->assertTrue(is_object($this->fixture));
