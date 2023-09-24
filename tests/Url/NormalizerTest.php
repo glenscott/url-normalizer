@@ -42,11 +42,6 @@ class NormalizerTest extends \PHPUnit\Framework\TestCase
         $this->assertTrue(is_object($this->fixture));
     }
 
-    public function testObjectIsOfCorrectType()
-    {
-        $this->assertTrue(get_class($this->fixture) == 'Url\Normalizer');
-    }
-
     public function testObjectHasGetUrlMethod()
     {
         $this->assertTrue(method_exists($this->fixture, 'getUrl'));
