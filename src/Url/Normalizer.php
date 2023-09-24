@@ -66,6 +66,11 @@ class Normalizer
     {
         $queryString = array();
         foreach ($query as $queryKey => $queryValue) {
+            if ($this->removeTrackingParameter) {
+                if (array_key_exists($queryKey, $this->trackingString)) {
+                    continue;
+                }
+            }
             if (is_array($queryValue)) {
                 $queryString[rawurldecode($queryKey)] = $this->getQuery($queryValue);
             } else {
