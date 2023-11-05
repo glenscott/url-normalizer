@@ -25,14 +25,6 @@ jobs:
         php-version: ${{ matrix.php }}
         extensions: mbstring
 
-    - name: Cache Composer packages
-      id: composer-cache
-      uses: actions/cache@v3
-      with:
-        path: ${{ steps.composer-cache.outputs.dir }}
-        key: ${{ runner.os }}-composer-${{ matrix.php }}
-        restore-keys: ${{ runner.os }}-composer-
-
     - name: Install dependencies
       run: composer install --prefer-dist --no-interaction
 
